@@ -1,16 +1,56 @@
+# type Query {
+#   people: [Person]!
+#   person(id: Int!): Person
+# }
+
+# type Mutation {
+#   addPerson(name: String!, age: Int!, gender: String!): Person!
+#   deletePerson(id: Int!): Boolean!
+# }
+
+# type Person {
+#   id: Int!
+#   name: String!
+#   age: Int!
+#   gender: String!
+# }
+scalar Date
+
 type Query {
-  people: [Person]!
-  person(id: Int!): Person
+  ChatLog: [ChatLog]
+  ChatRoom: [ChatRoom]
+  ContryPerVisitor: [ContryPerVisitor]
+  User: [User]
 }
 
 type Mutation {
-  addPerson(name: String!, age: Int!, gender: String!): Person!
-  deletePerson(id: Int!): Boolean!
+  sendLog(chat_room: ID!, uid: ID, log: String, createAt: Date): Boolean
 }
 
-type Person {
-  id: Int!
-  name: String!
-  age: Int!
-  gender: String!
+type ChatLog {
+  chat_room: ID!
+  uid: ID
+  log: String
+  createAt: Date
+}
+
+type ChatRoom {
+  _id: ID!
+  type: String
+  uid: [ID]
+}
+
+type ContryPerVisitor {
+  country_code: String!
+  count: Int
+}
+
+type User {
+  _id: ID!
+  username: String!
+  email: String!
+  password: String
+  followers: [ID]
+  following: [ID]
+  createAt: Date
 }

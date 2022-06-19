@@ -1,13 +1,18 @@
 import mongoose, { ConnectOptions } from "mongoose";
 import { config } from "dotenv";
+// import ChatLog from "./chat_log";
+// import User from "./user";
+// import ContryPerVisitor from "./country_per_visitor";
+// import ChatRoom from "./chat_room";
 
 config();
 
-const connect = () => {
+const connect: () => void = () => {
   if (process.env.NODE_ENV !== "production") {
     mongoose.set("debug", true);
   }
 };
+
 mongoose.connect(
   process.env.DB_HOST!,
   {
