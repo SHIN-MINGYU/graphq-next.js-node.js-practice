@@ -1,9 +1,10 @@
 // import { getById, addPerson, deletePerson } from "./action";
 // import { people } from "./data";
-
-import { ObjectId } from "mongoose";
 import ChatLogs from "../schemas/chat_log";
 import { getItemToMongo } from "./action";
+import { PubSub, withFilter } from "graphql-subscriptions";
+
+export const pubsub = new PubSub();
 
 // const resolvers = {
 //   Query: {
@@ -20,6 +21,7 @@ import { getItemToMongo } from "./action";
 // };
 // export default resolvers;
 
+const SEND_LOG: string = "SEND_LOG";
 const resolvers = {
   Query: {
     ChatLog: () => {
@@ -34,15 +36,31 @@ const resolvers = {
         uid,
         log,
         createAt,
-      }: { chat_room: String; uid: String; log: String; createAt: Date }
+      }: { chat_room: string; uid: string; log: string; createAt: Date }
     ) => {
+      pubsub.publish(SEND_LOG, {
+        Logging: { chat_room, log, uid },
+      });
       ChatLogs.create({
         chat_room: chat_room,
         uid: uid,
         log: log,
         createAt: createAt,
       });
-      return true;
+      return log;
+    },
+  },
+  Subscription: {
+    Logging: {
+      subscribe: withFilter(
+        (chat_room: string) => {
+          console.log(chat_room);
+          return pubsub!.asyncIterator(["SEND_LOG"]);
+        },
+        (payload, variables) => {
+          return true;
+        }
+      ),
     },
   },
 };

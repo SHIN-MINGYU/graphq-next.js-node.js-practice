@@ -24,7 +24,10 @@ type Query {
 }
 
 type Mutation {
-  sendLog(chat_room: ID!, uid: ID, log: String, createAt: Date): Boolean
+  sendLog(chat_room: ID!, uid: ID, log: String, createAt: Date): String
+}
+type Subscription {
+  Logging(chat_room: String!): String
 }
 
 type ChatLog {

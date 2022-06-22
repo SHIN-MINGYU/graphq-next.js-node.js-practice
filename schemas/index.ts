@@ -1,10 +1,5 @@
 import mongoose, { ConnectOptions } from "mongoose";
 import { config } from "dotenv";
-// import ChatLog from "./chat_log";
-// import User from "./user";
-// import ContryPerVisitor from "./country_per_visitor";
-// import ChatRoom from "./chat_room";
-
 config();
 
 const connect: () => void = () => {

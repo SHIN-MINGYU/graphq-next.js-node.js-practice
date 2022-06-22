@@ -1,13 +1,18 @@
 import { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import path from "path";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import { readFileSync } from "fs";
 import express from "express";
 import http from "http";
+import WebSocket from "ws";
+import { useServer } from "graphql-ws/lib/use/ws";
 import connect from "./schemas";
 import resolvers from "./graphql/resolvers";
+import { pubsub } from "./graphql/resolvers";
+import cors from "cors";
 
-const typeDefs = readFileSync(
+const typeDefs: string = readFileSync(
   require.resolve(path.join(__dirname, "./graphql/typeDefs.graphql"))
 ).toString();
 
@@ -16,18 +21,40 @@ connect();
 async function startApolloServer(typeDefs: any, resolvers: any) {
   const app = express();
   const httpServer = http.createServer(app);
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  app.use(cors());
+  const wsServer = new WebSocket.Server({
+    // This is the `httpServer` we created in a previous step.
+    server: httpServer,
+    // Pass a different path here if your ApolloServer serves at
+    // a different path.
+    path: "/subscriptions",
+  });
+  const serverCleanup = useServer({ schema }, wsServer);
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
     csrfPrevention: true,
     cache: "bounded",
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    context: ({ req, res }) => ({ req, res, pubsub }),
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
+    ],
   });
+
   try {
     await server.start();
     server.applyMiddleware({
       app,
-      path: "/",
+      path: "/graphql",
     });
     await new Promise<void>((resolve) =>
       httpServer.listen({ port: 4000 }, resolve)
