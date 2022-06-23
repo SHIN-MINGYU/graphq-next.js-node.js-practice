@@ -3,33 +3,24 @@
 import ChatLogs from "../schemas/chat_log";
 import { getItemToMongo } from "./action";
 import { PubSub, withFilter } from "graphql-subscriptions";
+import ChatRooms from "../schemas/chat_room";
 
 export const pubsub = new PubSub();
 
-// const resolvers = {
-//   Query: {
-//     people: () => people,
-//     person: (_: any, { id }: { id: number }) => getById(id, people),
-//   },
-//   Mutation: {
-//     addPerson: (
-//       _: any,
-//       { name, age, gender }: { name: string; age: number; gender: string }
-//     ) => addPerson(name, age, gender, people),
-//     deletePerson: (_: any, { id }: { id: number }) => deletePerson(id, people),
-//   },
-// };
-// export default resolvers;
-
-const SEND_LOG: string = "SEND_LOG";
+const SEND_CHAT: string = "SEND_CHAT";
 const resolvers = {
   Query: {
-    ChatLog: () => {
-      return getItemToMongo(ChatLogs);
+    ChatLog: (_: any, { chat_room }: { chat_room: string }) => {
+      return getItemToMongo(ChatLogs, { chat_room });
+    },
+    SearchRoom: () => {
+      return getItemToMongo(ChatRooms, {
+        where: "this.uid.length <2",
+      });
     },
   },
   Mutation: {
-    sendLog: (
+    SendChat: (
       _: any,
       {
         chat_room,
@@ -38,8 +29,13 @@ const resolvers = {
         createAt,
       }: { chat_room: string; uid: string; log: string; createAt: Date }
     ) => {
-      pubsub.publish(SEND_LOG, {
-        Logging: { chat_room, log, uid },
+      pubsub.publish(SEND_CHAT, {
+        CheckChat: {
+          chat_room,
+          log,
+          uid,
+          createAt,
+        },
       });
       ChatLogs.create({
         chat_room: chat_room,
@@ -49,15 +45,19 @@ const resolvers = {
       });
       return log;
     },
+    CreateRoom: (_: any, { uid, type }: { uid: string; type: string }) => {
+      ChatRooms.create({ uid: [uid], type: type });
+      return true;
+    },
   },
   Subscription: {
-    Logging: {
+    CheckChat: {
       subscribe: withFilter(
         (chat_room: string) => {
-          console.log(chat_room);
-          return pubsub!.asyncIterator(["SEND_LOG"]);
+          return pubsub!.asyncIterator(["SEND_CHAT"]);
         },
         (payload, variables) => {
+          console.log(payload), console.log(variables);
           return true;
         }
       ),

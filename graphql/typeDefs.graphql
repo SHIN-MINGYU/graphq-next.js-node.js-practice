@@ -1,34 +1,23 @@
-# type Query {
-#   people: [Person]!
-#   person(id: Int!): Person
-# }
-
-# type Mutation {
-#   addPerson(name: String!, age: Int!, gender: String!): Person!
-#   deletePerson(id: Int!): Boolean!
-# }
-
-# type Person {
-#   id: Int!
-#   name: String!
-#   age: Int!
-#   gender: String!
-# }
 scalar Date
 
 type Query {
-  ChatLog: [ChatLog]
+  ChatLog(chat_room: ID!): [ChatLog]
   ChatRoom: [ChatRoom]
   ContryPerVisitor: [ContryPerVisitor]
   User: [User]
+
+  SearchRoom: [ChatRoom]
 }
 
 type Mutation {
-  sendLog(chat_room: ID!, uid: ID, log: String, createAt: Date): String
+  SendChat(chat_room: ID!, uid: ID, log: String, createAt: Date): String
+  CreateRoom(uid: ID, type: String): Boolean
 }
 type Subscription {
-  Logging(chat_room: String!): String
+  CheckChat(chat_room: ID!): ChatLog
 }
+
+#DB Types
 
 type ChatLog {
   chat_room: ID!
