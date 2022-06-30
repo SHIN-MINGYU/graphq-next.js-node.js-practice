@@ -5,13 +5,12 @@ type Query {
   ChatRoom: [ChatRoom]
   ContryPerVisitor: [ContryPerVisitor]
   User: [User]
-
-  SearchRoom: [ChatRoom]
 }
 
 type Mutation {
   SendChat(chat_room: ID!, uid: ID, log: String, createAt: Date): String
-  CreateRoom(uid: ID, type: String): Boolean
+  SearchRoom(uid: ID, type: String): ID
+  LeaveRoom(chat_room: ID!, uid: ID): Boolean
 }
 type Subscription {
   CheckChat(chat_room: ID!): ChatLog
@@ -42,6 +41,7 @@ type User {
   username: String!
   email: String!
   password: String
+  status: String
   followers: [ID]
   following: [ID]
   createAt: Date

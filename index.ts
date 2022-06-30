@@ -15,13 +15,14 @@ import cors from "cors";
 const typeDefs: string = readFileSync(
   require.resolve(path.join(__dirname, "./graphql/typeDefs.graphql"))
 ).toString();
-
+// read graphql files and insert into typeDefs variables for start apollo server
 connect();
 
-async function startApolloServer(typeDefs: any, resolvers: any) {
+async function startApolloServer(typeDefs: string, resolvers: any) {
   const app = express();
   const httpServer = http.createServer(app);
   const schema = makeExecutableSchema({ typeDefs, resolvers });
+  // combine typeDefs and resolvers
   app.use(cors());
   const wsServer = new WebSocket.Server({
     // This is the `httpServer` we created in a previous step.
@@ -31,6 +32,7 @@ async function startApolloServer(typeDefs: any, resolvers: any) {
     path: "/subscriptions",
   });
   const serverCleanup = useServer({ schema }, wsServer);
+  // first parmas is schema at line 24 and second params wsServer info
   const server = new ApolloServer({
     schema,
     csrfPrevention: true,

@@ -7,15 +7,13 @@ import ChatRooms from "../schemas/chat_room";
 
 export const pubsub = new PubSub();
 
-const SEND_CHAT: string = "SEND_CHAT";
+const CHECK_CHAT: string = "CHECK_CHAT";
 const resolvers = {
   Query: {
     ChatLog: (_: any, { chat_room }: { chat_room: string }) => {
-      return getItemToMongo(ChatLogs, { chat_room });
-    },
-    SearchRoom: () => {
-      return getItemToMongo(ChatRooms, {
-        where: "this.uid.length <2",
+      return getItemToMongo(ChatLogs, {
+        chat_room,
+        $orderby: { createAt: -1 },
       });
     },
   },
@@ -29,7 +27,7 @@ const resolvers = {
         createAt,
       }: { chat_room: string; uid: string; log: string; createAt: Date }
     ) => {
-      pubsub.publish(SEND_CHAT, {
+      pubsub.publish(CHECK_CHAT, {
         CheckChat: {
           chat_room,
           log,
@@ -45,20 +43,53 @@ const resolvers = {
       });
       return log;
     },
-    CreateRoom: (_: any, { uid, type }: { uid: string; type: string }) => {
-      ChatRooms.create({ uid: [uid], type: type });
+    SearchRoom: async (
+      _: any,
+      { uid, type }: { uid: string; type: string }
+    ) => {
+      const findChatRoom = await ChatRooms.find({
+        type,
+        $where: "this.uid.length < 2",
+      });
+      if (findChatRoom.length === 0) {
+        const createRoom = await ChatRooms.create({
+          type: type,
+          uid: [uid],
+        });
+        return createRoom._id;
+      }
+      const roomLen = findChatRoom.length;
+      const SELECTED_NUM = Math.floor(Math.random() * roomLen);
+      const _id = findChatRoom[SELECTED_NUM]._id;
+      await ChatRooms.updateOne({ _id }, { $push: { uid } }).orFail();
+      return _id;
+    },
+    LeaveRoom: async (
+      _: any,
+      { chat_room, uid }: { chat_room: string; uid: string }
+    ) => {
+      console.log("this");
+      pubsub.publish(CHECK_CHAT, {
+        CheckChat: {
+          leave: true,
+        },
+      });
+      await ChatRooms.deleteOne({ _id: chat_room });
+
       return true;
     },
   },
   Subscription: {
     CheckChat: {
       subscribe: withFilter(
-        (chat_room: string) => {
-          return pubsub!.asyncIterator(["SEND_CHAT"]);
-        },
+        () => pubsub!.asyncIterator(["CHECK_CHAT"]),
         (payload, variables) => {
-          console.log(payload), console.log(variables);
-          return true;
+          console.log("payload : ", payload);
+          console.log("variables : ", variables);
+          if (payload.CheckChat!.leave) {
+            return true;
+          }
+          return payload.CheckChat.chat_room === variables.chat_room;
         }
       ),
     },
