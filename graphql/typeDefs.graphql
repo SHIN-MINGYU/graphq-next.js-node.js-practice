@@ -4,7 +4,6 @@ type Query {
   ChatLog(chat_room: ID!): [ChatLog]
   ChatRoom: [ChatRoom]
   ContryPerVisitor: [ContryPerVisitor]
-  User: [User]
 }
 
 type Mutation {
@@ -14,6 +13,11 @@ type Mutation {
 }
 type Subscription {
   CheckChat(chat_room: ID!): ChatLog
+  CheckRoom(chat_room: ID!): Leave
+}
+
+type Leave {
+  leave: Boolean
 }
 
 #DB Types
