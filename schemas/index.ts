@@ -1,7 +1,7 @@
 import mongoose, { ConnectOptions } from "mongoose";
 import { config } from "dotenv";
-config();
 
+config();
 const connect: () => void = () => {
   if (process.env.NODE_ENV !== "production") {
     mongoose.set("debug", true);

@@ -10,8 +10,11 @@ import { useServer } from "graphql-ws/lib/use/ws";
 import connect from "./schemas";
 import resolvers from "./graphql/resolvers";
 import { pubsub } from "./graphql/resolvers";
+import { config } from "dotenv";
+import getClaims from "./jwt/getClaims";
 import cors from "cors";
 
+config();
 const typeDefs: string = readFileSync(
   require.resolve(path.join(__dirname, "./graphql/typeDefs.graphql"))
 ).toString();
@@ -23,7 +26,6 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
   const httpServer = http.createServer(app);
   const schema = makeExecutableSchema({ typeDefs, resolvers });
   // combine typeDefs and resolvers
-  app.use(cors());
   const wsServer = new WebSocket.Server({
     // This is the `httpServer` we created in a previous step.
     server: httpServer,
@@ -37,7 +39,10 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
     schema,
     csrfPrevention: true,
     cache: "bounded",
-    context: ({ req, res }) => ({ req, res, pubsub }),
+    context: ({ req, res }) => ({
+      pubsub: { req, res, pubsub },
+      claims: getClaims(req.headers.authorization),
+    }),
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {
@@ -51,11 +56,18 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
       },
     ],
   });
-
+  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
   try {
     await server.start();
+
+    const corsOptions = {
+      origin: "http://localhost:3000",
+      credentials: true,
+    };
+
     server.applyMiddleware({
       app,
+      cors: corsOptions,
       path: "/graphql",
     });
     await new Promise<void>((resolve) =>

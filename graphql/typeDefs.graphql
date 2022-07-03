@@ -4,12 +4,19 @@ type Query {
   ChatLog(chat_room: ID!): [ChatLog]
   ChatRoom: [ChatRoom]
   ContryPerVisitor: [ContryPerVisitor]
+  Login(username: String!, password: String!): String
 }
 
 type Mutation {
   SendChat(chat_room: ID!, uid: ID, log: String, createAt: Date): String
   SearchRoom(uid: ID, type: String): ID
   LeaveRoom(chat_room: ID!, uid: ID): Boolean
+  SignUp(
+    username: String!
+    nickname: String!
+    password: String!
+    email: String
+  ): Boolean
 }
 type Subscription {
   CheckChat(chat_room: ID!): ChatLog
@@ -43,7 +50,8 @@ type ContryPerVisitor {
 type User {
   _id: ID!
   username: String!
-  email: String!
+  nickname: String!
+  email: String
   password: String
   status: String
   followers: [ID]

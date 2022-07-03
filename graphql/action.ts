@@ -1,4 +1,4 @@
-import { FilterQuery, Model, Models, Schema } from "mongoose";
+import { FilterQuery, Model } from "mongoose";
 
 export const getItemToMongo = (
   DB: Model<any>,

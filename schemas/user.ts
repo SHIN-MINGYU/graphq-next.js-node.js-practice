@@ -6,9 +6,9 @@ const {
 
 export const user_schema = new Schema({
   username: String,
+  nickname: String,
   email: String,
   password: String,
-  status: String,
   follower: [ObjectId],
   following: [ObjectId],
   createAt: { type: Date, default: Date.now },

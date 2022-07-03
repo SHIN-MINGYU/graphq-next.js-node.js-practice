@@ -1,6 +1,7 @@
-import ChatLogs from "@schemas/chat_log";
 import ChatRooms from "@schemas/chat_room";
+import ChatLogs from "@schemas/chat_log";
 import { pubsub } from "../resolvers";
+import { ObjectId } from "mongoose";
 
 const CHECK_CHAT: string = "CHECK_CHAT";
 const CHECK_ROOM: string = "CHECK_ROOM";
@@ -33,7 +34,7 @@ export const SendChat = (
 
 export const SearchRoom = async (
   _: any,
-  { uid, type }: { uid: string; type: string }
+  { uid, type }: { uid: ObjectId; type: string }
 ) => {
   const findChatRoom = await ChatRooms.find({
     type,
