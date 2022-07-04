@@ -4,7 +4,7 @@ import { PubSub } from "graphql-subscriptions";
 import { LeaveRoom, SearchRoom, SendChat } from "./mutation/chat";
 import { ChatLog } from "./query/chat";
 import { CheckChat, CheckRoom } from "./subscribe/chat";
-import { SignUp } from "./mutation/user";
+import { SignUp, LogOut } from "./mutation/user";
 import { Login } from "./query/user";
 export const pubsub = new PubSub();
 
@@ -18,6 +18,7 @@ const resolvers = {
     SearchRoom,
     LeaveRoom,
     SignUp,
+    LogOut,
   },
   Subscription: {
     CheckChat,
