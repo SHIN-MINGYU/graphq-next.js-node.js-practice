@@ -8,7 +8,13 @@ type Query {
 }
 
 type Mutation {
-  SendChat(chat_room: ID!, uid: ID, log: String, createAt: Date): String
+  SendChat(
+    chat_room: ID!
+    uid: ID
+    log: String
+    username: String
+    createAt: Date
+  ): String
   SearchRoom(uid: ID, type: String): ID
   LeaveRoom(chat_room: ID!, uid: ID): Boolean
   SignUp(
@@ -18,6 +24,7 @@ type Mutation {
     email: String
   ): Boolean
 }
+
 type Subscription {
   CheckChat(chat_room: ID!): ChatLog
   CheckRoom(chat_room: ID!): Leave
@@ -32,6 +39,7 @@ type Leave {
 type ChatLog {
   chat_room: ID!
   uid: ID
+  username: String
   log: String
   createAt: Date
 }

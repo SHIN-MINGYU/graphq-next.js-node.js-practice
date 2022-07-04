@@ -6,7 +6,6 @@ export const getItemToMongo = (
 ) => {
   return new Promise((resolve, reject) => {
     DB.find(condition ? condition : {}, (err: Error, result: Array<any>) => {
-      console.log(result);
       if (err) reject(err);
       else resolve(result);
     });

@@ -11,8 +11,9 @@ import connect from "./schemas";
 import resolvers from "./graphql/resolvers";
 import { pubsub } from "./graphql/resolvers";
 import { config } from "dotenv";
-import getClaims from "./jwt/getClaims";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import deserializeUser from "./context/deserializeUser";
 
 config();
 const typeDefs: string = readFileSync(
@@ -40,8 +41,10 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
     csrfPrevention: true,
     cache: "bounded",
     context: ({ req, res }) => ({
-      pubsub: { req, res, pubsub },
-      claims: getClaims(req.headers.authorization),
+      pubsub,
+      deserializeUser: deserializeUser(req, res),
+      res,
+      req,
     }),
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
@@ -56,14 +59,17 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
       },
     ],
   });
-  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
+  const corsOptions = {
+    origin: "http://localhost:3000",
+    credentials: true,
+  };
+
+  app.use(cors(corsOptions));
+  app.use(cookieParser());
+
   try {
     await server.start();
-
-    const corsOptions = {
-      origin: "http://localhost:3000",
-      credentials: true,
-    };
 
     server.applyMiddleware({
       app,

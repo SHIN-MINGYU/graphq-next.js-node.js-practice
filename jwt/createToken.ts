@@ -1,15 +1,17 @@
 import jwt from "jsonwebtoken";
+import { ObjectId } from "mongodb";
 
 type userInfo = {
-  username: string;
-  password: string;
+  uid?: ObjectId;
+  username?: string;
+  sessionId: string;
 };
 
-const createToken = (userInfo: userInfo) => {
+const createToken = (userInfo: userInfo, expiresIn: string): string => {
   const token = jwt.sign(
     { userInfo },
     process.env.JWT_SECRET_KEY || "SECRET_KEY",
-    { expiresIn: "5h" }
+    { expiresIn }
   );
   return token;
 };
