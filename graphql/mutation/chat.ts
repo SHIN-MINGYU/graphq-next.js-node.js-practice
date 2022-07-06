@@ -1,7 +1,8 @@
 import ChatRooms from "@schemas/chat_room";
 import ChatLogs from "@schemas/chat_log";
-import { pubsub } from "../resolvers";
+import { pubsub } from "../pubsub";
 import { ObjectId } from "mongoose";
+import { contextType } from "@type/contextType";
 
 const CHECK_CHAT: string = "CHECK_CHAT";
 const CHECK_ROOM: string = "CHECK_ROOM";
@@ -15,7 +16,7 @@ type chatLogArgs = {
   createAt: Date;
 };
 
-export const SendChat = (_: any, args: chatLogArgs, context: any) => {
+export const SendChat = (_: any, args: chatLogArgs) => {
   //subscribe publish check_chat
   pubsub.publish(CHECK_CHAT, {
     CheckChat: { ...args },
@@ -57,11 +58,13 @@ export const SearchRoom = async (_: any, args: searchRoomArgs) => {
   return _id;
 };
 
+type LeaveRoomArgs = {
+  chat_room: string;
+};
+
 //LeaveRoom
-export const LeaveRoom = async (
-  _: any,
-  { chat_room, uid }: { chat_room: string; uid: string }
-) => {
+export const LeaveRoom = async (_: any, args: LeaveRoomArgs) => {
+  const { chat_room } = args;
   //subscribe publish check_room
   pubsub.publish(CHECK_ROOM, {
     CheckRoom: { leave: true },

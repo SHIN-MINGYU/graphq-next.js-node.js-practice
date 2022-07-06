@@ -5,6 +5,7 @@ type Query {
   ChatRoom: [ChatRoom]
   ContryPerVisitor: [ContryPerVisitor]
   Login(username: String!, password: String!): String
+  UserInfo: User
 }
 
 type Mutation {
@@ -24,6 +25,7 @@ type Mutation {
     email: String
   ): Boolean
   LogOut: Boolean
+  restoreAccessToken: String
 }
 
 type Subscription {

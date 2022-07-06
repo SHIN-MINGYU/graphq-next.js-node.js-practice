@@ -2,22 +2,21 @@ import { Request, Response } from "express";
 import refreshTokenSession from "../schemas/refreshTokenSession";
 import verifyToken from "./verifyToken";
 
-export default function deleteToken(req: Request, res: Response) {
+const deleteToken = (req: Request, res: Response): boolean => {
   const data = verifyToken(req.cookies.refreshToken);
   if (data) {
     refreshTokenSession
       //@ts-ignore
       .deleteOne({ _id: data.userInfo.sessionId })
-      .then((res) => console.log("suceess"));
+      .then((res) => console.log("suceess"))
+      .catch((err) => console.log(err));
 
-    res.cookie("accessToken", "", {
-      maxAge: 0,
-      httpOnly: true,
-    });
     res.cookie("refreshToken", "", {
       maxAge: 0,
       httpOnly: true,
     });
   }
-  return "success";
-}
+  return true;
+};
+
+export default deleteToken;

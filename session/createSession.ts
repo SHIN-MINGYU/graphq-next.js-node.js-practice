@@ -7,7 +7,7 @@ type args = {
   uid: ObjectId;
 };
 
-export default function createSession(args: args) {
+const createSession = (args: args) => {
   const { username, uid } = args;
   const sessionId = crypto
     .createHash("sha512")
@@ -15,4 +15,6 @@ export default function createSession(args: args) {
     .digest("hex");
   refreshTokenSession.create({ _id: sessionId, values: { username, uid } });
   return sessionId;
-}
+};
+
+export default createSession;

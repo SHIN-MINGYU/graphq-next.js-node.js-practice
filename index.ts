@@ -1,5 +1,8 @@
 import { ApolloServer } from "apollo-server-express";
-import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
+import {
+  ApolloServerPluginDrainHttpServer,
+  AuthenticationError,
+} from "apollo-server-core";
 import path from "path";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { readFileSync } from "fs";
@@ -9,7 +12,7 @@ import WebSocket from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import connect from "./schemas";
 import resolvers from "./graphql/resolvers";
-import { pubsub } from "./graphql/resolvers";
+import { pubsub } from "./graphql/pubsub";
 import { config } from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -42,10 +45,11 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
     cache: "bounded",
     context: ({ req, res }) => ({
       pubsub,
-      deserializeUser: deserializeUser(req, res),
+      deserializeUser: deserializeUser(req),
       res,
       req,
     }),
+
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {

@@ -1,6 +1,6 @@
 import { FilterQuery, Model } from "mongoose";
 
-export const getItemToMongo = (
+export const getItemsToMongo = (
   DB: Model<any>,
   condition?: FilterQuery<any>
 ) => {

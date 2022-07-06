@@ -1,17 +1,18 @@
 // import { getById, addPerson, deletePerson } from "./action";
 // import { people } from "./data";
-import { PubSub } from "graphql-subscriptions";
+
 import { LeaveRoom, SearchRoom, SendChat } from "./mutation/chat";
 import { ChatLog } from "./query/chat";
 import { CheckChat, CheckRoom } from "./subscribe/chat";
 import { SignUp, LogOut } from "./mutation/user";
-import { Login } from "./query/user";
-export const pubsub = new PubSub();
+import { Login, UserInfo } from "./query/user";
+import { restoreAccessToken } from "./mutation/token";
 
 const resolvers = {
   Query: {
     ChatLog,
     Login,
+    UserInfo,
   },
   Mutation: {
     SendChat,
@@ -19,6 +20,7 @@ const resolvers = {
     LeaveRoom,
     SignUp,
     LogOut,
+    restoreAccessToken,
   },
   Subscription: {
     CheckChat,

@@ -1,11 +1,13 @@
 import User from "@schemas/user";
 import createToken from "@jwt/createToken";
 import createSession from "@session/createSession";
+import verifyToken from "@jwt/verifyToken";
+import { contextType } from "../../type/contextType";
 
-type LoginArgs = {
+interface LoginArgs {
   username: string;
-  password: string;
-};
+  password: string | null;
+}
 
 export const Login = async (_: any, args: LoginArgs, context: any) => {
   const { username, password } = args;
@@ -20,17 +22,35 @@ export const Login = async (_: any, args: LoginArgs, context: any) => {
       "5m"
     );
     const refreshToken = createToken({ sessionId }, "1y");
-    context.res.cookie("accessToken", accessToken, {
-      maxAge: 1000 * 60 * 5,
-      httpOnly: true,
-    });
+
     context.res.cookie("refreshToken", refreshToken, {
       maxAge: 3.154e10,
       httpOnly: true,
     });
 
-    return "success";
+    //return accessToken for remain in localStorage
+    return accessToken;
   } else {
-    return "who are you?";
+    return new Error("who are you?");
   }
+};
+
+export const UserInfo = async (_: any, {}, context: contextType) => {
+  // if deserializeUser's return value have eauthError
+  // throw error
+  if (typeof context.deserializeUser !== "string") {
+    if (context.deserializeUser.authError) {
+      throw context.deserializeUser.authError;
+    }
+  }
+  //else
+  //decode jwt and return user info for query
+  const { authorization } = context.req.headers;
+
+  if (!authorization) return "false";
+  const decoded = verifyToken(authorization)!;
+
+  // @ts-ignore
+  const user = await User.findOne({ _id: decoded.userInfo.uid });
+  return user;
 };

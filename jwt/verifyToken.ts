@@ -1,6 +1,7 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { decodedToken } from "../type/session";
 
-function verifyToken(token: string) {
+const verifyToken = (token: string | undefined) => {
   try {
     if (token === undefined) {
       throw new Error("authorization can't find");
@@ -13,5 +14,5 @@ function verifyToken(token: string) {
   } catch (err) {
     return null;
   }
-}
+};
 export default verifyToken;

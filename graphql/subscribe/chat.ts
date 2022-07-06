@@ -1,5 +1,5 @@
 import { withFilter } from "graphql-subscriptions";
-import { pubsub } from "../resolvers";
+import { pubsub } from "../pubsub";
 
 export const CheckChat = {
   subscribe: withFilter(
