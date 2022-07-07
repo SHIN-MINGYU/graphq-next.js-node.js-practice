@@ -1,8 +1,5 @@
 import { ApolloServer } from "apollo-server-express";
-import {
-  ApolloServerPluginDrainHttpServer,
-  AuthenticationError,
-} from "apollo-server-core";
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import path from "path";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { readFileSync } from "fs";

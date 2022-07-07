@@ -4,7 +4,7 @@
 import { LeaveRoom, SearchRoom, SendChat } from "./mutation/chat";
 import { ChatLog } from "./query/chat";
 import { CheckChat, CheckRoom } from "./subscribe/chat";
-import { SignUp, LogOut } from "./mutation/user";
+import { SignUp, LogOut, UpdateUserInfo } from "./mutation/user";
 import { Login, UserInfo } from "./query/user";
 import { restoreAccessToken } from "./mutation/token";
 
@@ -21,6 +21,7 @@ const resolvers = {
     SignUp,
     LogOut,
     restoreAccessToken,
+    UpdateUserInfo,
   },
   Subscription: {
     CheckChat,

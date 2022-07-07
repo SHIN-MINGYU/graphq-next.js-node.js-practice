@@ -36,21 +36,18 @@ export const Login = async (_: any, args: LoginArgs, context: any) => {
 };
 
 export const UserInfo = async (_: any, {}, context: contextType) => {
-  // if deserializeUser's return value have eauthError
+  // if deserializeUser's return value have authError
   // throw error
   if (typeof context.deserializeUser !== "string") {
     if (context.deserializeUser.authError) {
       throw context.deserializeUser.authError;
     }
   }
-  //else
-  //decode jwt and return user info for query
-  const { authorization } = context.req.headers;
-
-  if (!authorization) return "false";
-  const decoded = verifyToken(authorization)!;
-
+  //@ts-ignore
+  if (!context.req.user) {
+    return new Error("GUEST");
+  }
   // @ts-ignore
-  const user = await User.findOne({ _id: decoded.userInfo.uid });
+  const user = await User.findOne({ _id: context.req.user.uid });
   return user;
 };

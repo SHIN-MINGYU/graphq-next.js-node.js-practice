@@ -26,6 +26,7 @@ type Mutation {
   ): Boolean
   LogOut: Boolean
   restoreAccessToken: String
+  UpdateUserInfo(nickname: String, gender: String, description: String): Boolean
 }
 
 type Subscription {
@@ -63,8 +64,9 @@ type User {
   username: String!
   nickname: String!
   email: String
+  gender: String
   password: String
-  status: String
+  description: String
   followers: [ID]
   following: [ID]
   createAt: Date
