@@ -16,7 +16,7 @@ type chatLogArgs = {
   createAt: Date;
 };
 
-export const SendChat = (_: any, args: chatLogArgs, context: contextType) => {
+const SendChat = (_: any, args: chatLogArgs, context: contextType) => {
   //subscribe publish check_chat
   // @ts-ignore
   const { user } = context.req;
@@ -39,7 +39,7 @@ type searchRoomArgs = {
   type: string;
 };
 
-export const SearchRoom = async (_: any, args: searchRoomArgs) => {
+const SearchRoom = async (_: any, args: searchRoomArgs) => {
   const { uid, type } = args;
 
   const findChatRoom = await ChatRooms.find({
@@ -71,7 +71,7 @@ type LeaveRoomArgs = {
 };
 
 //LeaveRoom
-export const LeaveRoom = async (_: any, args: LeaveRoomArgs) => {
+const LeaveRoom = async (_: any, args: LeaveRoomArgs) => {
   const { chat_room } = args;
   //subscribe publish check_room
   pubsub.publish(CHECK_ROOM, {
@@ -81,3 +81,5 @@ export const LeaveRoom = async (_: any, args: LeaveRoomArgs) => {
 
   return true;
 };
+
+export default { SendChat, SearchRoom, LeaveRoom };

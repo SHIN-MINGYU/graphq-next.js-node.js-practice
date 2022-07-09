@@ -1,7 +1,7 @@
 import { withFilter } from "graphql-subscriptions";
 import { pubsub } from "../pubsub";
 
-export const CheckChat = {
+const CheckChat = {
   subscribe: withFilter(
     () => pubsub!.asyncIterator(["CHECK_CHAT"]),
     (payload, variables) => {
@@ -11,6 +11,8 @@ export const CheckChat = {
   ),
 };
 
-export const CheckRoom = {
+const CheckRoom = {
   subscribe: () => pubsub!.asyncIterator(["CHECK_ROOM"]),
 };
+
+export default { CheckChat, CheckRoom };

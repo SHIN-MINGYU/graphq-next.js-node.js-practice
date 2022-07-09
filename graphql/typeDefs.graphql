@@ -65,6 +65,7 @@ type User {
   nickname: String!
   email: String
   gender: String
+  img: String
   password: String
   description: String
   followers: [ID]

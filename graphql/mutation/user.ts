@@ -9,12 +9,12 @@ type signUpArgs = {
   email?: string;
 };
 
-export const SignUp = async (_: any, args: signUpArgs) => {
+const SignUp = async (_: any, args: signUpArgs) => {
   await user.create({ ...args });
   return true;
 };
 
-export const LogOut = async (_: any, {}, context: contextType) => {
+const LogOut = async (_: any, {}, context: contextType) => {
   const { req, res } = context;
   deleteToken(req, res);
   return true;
@@ -26,7 +26,7 @@ type updateUserInfoArgs = {
   description: string;
 };
 
-export const UpdateUserInfo = async (
+const UpdateUserInfo = async (
   _: any,
   args: updateUserInfoArgs,
   context: contextType
@@ -54,3 +54,5 @@ export const UpdateUserInfo = async (
   );
   return true;
 };
+
+export default { SignUp, LogOut, UpdateUserInfo };
