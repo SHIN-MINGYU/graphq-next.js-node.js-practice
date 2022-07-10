@@ -20,9 +20,7 @@ const SendChat = (_: any, args: chatLogArgs, context: contextType) => {
   //subscribe publish check_chat
   // @ts-ignore
   const { user } = context.req;
-  console.log(user);
   if (user) {
-    console.log(user);
     args.uid = user.uid;
     args.username = user.username;
   }

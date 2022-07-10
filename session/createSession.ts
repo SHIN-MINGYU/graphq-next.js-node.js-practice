@@ -7,13 +7,15 @@ type args = {
   uid: ObjectId;
 };
 
-const createSession = (args: args) => {
+const createSession = async (args: args) => {
   const { username, uid } = args;
   const sessionId = crypto
     .createHash("sha512")
     .update(username + process.env.JWT_SECRET_KEY + uid)
     .digest("hex");
-  refreshTokenSession.create({ _id: sessionId, values: { username, uid } });
+  if (!(await refreshTokenSession.findOne({ _id: sessionId }))) {
+    refreshTokenSession.create({ _id: sessionId, values: { username, uid } });
+  }
   return sessionId;
 };
 

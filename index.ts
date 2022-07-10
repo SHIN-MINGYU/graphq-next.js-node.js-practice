@@ -11,9 +11,10 @@ import connect from "./schemas";
 import resolvers from "./graphql/resolvers";
 import { pubsub } from "./graphql/pubsub";
 import { config } from "dotenv";
-import cors from "cors";
 import cookieParser from "cookie-parser";
 import deserializeUser from "./context/deserializeUser";
+import imgRouter from "./routes/img";
+import cors from "cors";
 
 config();
 const typeDefs: string = readFileSync(
@@ -46,7 +47,6 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
       res,
       req,
     }),
-
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {
@@ -66,8 +66,10 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
     credentials: true,
   };
 
-  app.use(cors(corsOptions));
   app.use(cookieParser());
+  app.use(cors(corsOptions));
+  app.use("/img", express.static("uploads"));
+  app.use("/img", imgRouter);
 
   try {
     await server.start();

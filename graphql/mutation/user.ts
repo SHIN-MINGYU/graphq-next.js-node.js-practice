@@ -1,6 +1,7 @@
 import deleteToken from "@jwt/deleteToken";
 import user from "@schemas/user";
 import { contextType } from "@type/contextType";
+import authErrorCheck from "../../util/error/authError";
 
 type signUpArgs = {
   username: string;
@@ -24,6 +25,7 @@ type updateUserInfoArgs = {
   nickname?: string;
   gender?: string;
   description: string;
+  profileImg: File;
 };
 
 const UpdateUserInfo = async (
@@ -31,19 +33,9 @@ const UpdateUserInfo = async (
   args: updateUserInfoArgs,
   context: contextType
 ) => {
-  if (typeof context.deserializeUser !== "string") {
-    if (context.deserializeUser.authError) {
-      throw context.deserializeUser.authError;
-    }
-  }
-  // @ts-ignore
-  if (!context.req.user) {
-    throw new Error("GUEST");
-  }
-
+  authErrorCheck(context);
   const { nickname, gender, description } = args;
-
-  user.updateOne(
+  await user.updateOne(
     // @ts-ignore
     { _id: context.req.user.uid },
     {

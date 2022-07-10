@@ -1,5 +1,4 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { decodedToken } from "../type/session";
+import jwt from "jsonwebtoken";
 
 const verifyToken = (token: string | undefined) => {
   try {

@@ -11,7 +11,6 @@ const restoreAccessToken = async (_: any, {}, context: contextType) => {
     //@ts-ignore
     _id: refresh.userInfo.sessionId,
   });
-
   if (!session) throw new Error("session is can't define");
 
   const {

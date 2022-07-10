@@ -1,7 +1,8 @@
 import User from "@schemas/user";
 import createToken from "@jwt/createToken";
 import createSession from "@session/createSession";
-import { contextType } from "../../type/contextType";
+import { contextType } from "@type/contextType";
+import authErrorCheck from "../../util/error/authError";
 
 interface LoginArgs {
   username: string;
@@ -13,7 +14,7 @@ const Login = async (_: any, args: LoginArgs, context: any) => {
   const user = await User.findOne({ username, password });
   if (user) {
     // create session
-    const sessionId = createSession({ username, uid: user._id });
+    const sessionId = await createSession({ username, uid: user._id });
 
     // create && set access && refresh Tokens
     const accessToken = createToken(
@@ -21,12 +22,11 @@ const Login = async (_: any, args: LoginArgs, context: any) => {
       "5m"
     );
     const refreshToken = createToken({ sessionId }, "1y");
-
     context.res.cookie("refreshToken", refreshToken, {
       maxAge: 3.154e10,
       httpOnly: true,
     });
-
+    console.log("here?");
     //return accessToken for remain in localStorage
     return accessToken;
   } else {
@@ -37,15 +37,7 @@ const Login = async (_: any, args: LoginArgs, context: any) => {
 const UserInfo = async (_: any, {}, context: contextType) => {
   // if deserializeUser's return value have authError
   // throw error
-  if (typeof context.deserializeUser !== "string") {
-    if (context.deserializeUser.authError) {
-      throw context.deserializeUser.authError;
-    }
-  }
-  //@ts-ignore
-  if (!context.req.user) {
-    return new Error("GUEST");
-  }
+  authErrorCheck(context);
   // @ts-ignore
   const user = await User.findOne({ _id: context.req.user.uid });
   return user;

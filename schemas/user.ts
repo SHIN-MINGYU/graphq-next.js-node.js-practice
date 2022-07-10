@@ -11,6 +11,7 @@ export const user_schema = new Schema({
   gender: { type: String, default: "none" },
   password: String,
   description: String,
+  imgPath: String,
   follower: [ObjectId],
   following: [ObjectId],
   createAt: { type: Date, default: Date.now },
