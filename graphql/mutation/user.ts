@@ -2,6 +2,7 @@ import deleteToken from "@jwt/deleteToken";
 import user from "@schemas/user";
 import { contextType } from "@type/contextType";
 import authErrorCheck from "../../util/error/authError";
+import transport from "../../util/mailer";
 
 type signUpArgs = {
   username: string;
@@ -13,6 +14,31 @@ type signUpArgs = {
 const SignUp = async (_: any, args: signUpArgs) => {
   await user.create({ ...args });
   return true;
+};
+
+type sendMailArgs = {
+  email: string;
+};
+
+const SendMail = async (_: any, args: sendMailArgs) => {
+  const { email } = args;
+  const verifyCode = String(Math.floor(1000 + Math.random() * 9000));
+  const emailRe =
+    /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+  if (!emailRe.test(email)) {
+    throw new Error("invaild email");
+  }
+  try {
+    await transport.sendMail({
+      from: "smg20004@naver.com",
+      to: email,
+      subject: `[${verifyCode}] verification Code is successfully send`,
+      html: `${verifyCode}`,
+    });
+    return verifyCode;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const LogOut = async (_: any, {}, context: contextType) => {
@@ -47,4 +73,4 @@ const UpdateUserInfo = async (
   return true;
 };
 
-export default { SignUp, LogOut, UpdateUserInfo };
+export default { SignUp, SendMail, LogOut, UpdateUserInfo };

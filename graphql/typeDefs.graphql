@@ -6,6 +6,7 @@ type Query {
   ContryPerVisitor: [ContryPerVisitor]
   Login(username: String!, password: String!): String
   UserInfo: User
+  SearchUser(username: String): Boolean
 }
 
 type Mutation {
@@ -27,6 +28,7 @@ type Mutation {
   LogOut: Boolean
   restoreAccessToken: String
   UpdateUserInfo(nickname: String, gender: String, description: String): Boolean
+  SendMail(email: String!): String
 }
 
 type Subscription {

@@ -43,4 +43,16 @@ const UserInfo = async (_: any, {}, context: contextType) => {
   return user;
 };
 
-export default { Login, UserInfo };
+type SearchUser = {
+  username: string;
+};
+
+const SearchUser = async (_: any, args: SearchUser) => {
+  const { username } = args;
+  if (await User.findOne({ username })) {
+    return true;
+  }
+  return false;
+};
+
+export default { Login, UserInfo, SearchUser };
