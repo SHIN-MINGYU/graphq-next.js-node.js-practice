@@ -1,6 +1,8 @@
 import { getItemsToMongo } from "../action";
 import ChatLogs from "@schemas/chat_log";
 
+//=============================================================================
+
 type chatLogArgs = {
   chat_room: string;
 };
@@ -12,5 +14,7 @@ const ChatLog = (_: any, args: chatLogArgs) => {
     $orderby: { createAt: -1 },
   });
 };
+
+//=============================================================================
 
 export default { ChatLog };

@@ -17,7 +17,13 @@ type Mutation {
     username: String
     createAt: Date
   ): String
-  SearchRoom(uid: ID, type: String): ID
+  SearchRoom(uid: ID, type: String): String
+  EnterRoom(
+    chat_room: ID!
+    uid: ID!
+    userType: String
+    userInfo: String
+  ): Boolean
   LeaveRoom(chat_room: ID!, uid: ID): Boolean
   SignUp(
     username: String!
@@ -34,10 +40,24 @@ type Mutation {
 type Subscription {
   CheckChat(chat_room: ID!): ChatLog
   CheckRoom(chat_room: ID!): Leave
+  EnterRoom(chat_room: ID!): EnterRoom
 }
 
 type Leave {
   leave: Boolean
+}
+
+type EnterRoomUserInfo {
+  nickname: String
+  gender: String
+  description: String
+  imgPath: String
+}
+
+type EnterRoom {
+  uid: String
+  userType: String
+  userInfo: EnterRoomUserInfo
 }
 
 #DB Types

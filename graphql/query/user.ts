@@ -4,6 +4,8 @@ import createSession from "@session/createSession";
 import { contextType } from "@type/contextType";
 import authErrorCheck from "../../util/error/authError";
 
+//=============================================================================
+
 interface LoginArgs {
   username: string;
   password: string | null;
@@ -26,13 +28,14 @@ const Login = async (_: any, args: LoginArgs, context: any) => {
       maxAge: 3.154e10,
       httpOnly: true,
     });
-    console.log("here?");
     //return accessToken for remain in localStorage
     return accessToken;
   } else {
     return new Error("who are you?");
   }
 };
+
+//=============================================================================
 
 const UserInfo = async (_: any, {}, context: contextType) => {
   // if deserializeUser's return value have authError
@@ -42,6 +45,8 @@ const UserInfo = async (_: any, {}, context: contextType) => {
   const user = await User.findOne({ _id: context.req.user.uid });
   return user;
 };
+
+//=============================================================================
 
 type SearchUser = {
   username: string;
@@ -54,5 +59,7 @@ const SearchUser = async (_: any, args: SearchUser) => {
   }
   return false;
 };
+
+//=============================================================================
 
 export default { Login, UserInfo, SearchUser };

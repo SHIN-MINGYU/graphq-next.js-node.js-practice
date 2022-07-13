@@ -15,6 +15,7 @@ import cookieParser from "cookie-parser";
 import deserializeUser from "./context/deserializeUser";
 import imgRouter from "./routes/img";
 import cors from "cors";
+import bodyParser from "body-parser";
 
 config();
 const typeDefs: string = readFileSync(
@@ -70,6 +71,19 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
   app.use(cors(corsOptions));
   app.use("/img", express.static("uploads"));
   app.use("/img", imgRouter);
+  app.use(
+    bodyParser.json({
+      limit: "50mb",
+    })
+  );
+
+  app.use(
+    bodyParser.urlencoded({
+      limit: "50mb",
+      parameterLimit: 100000,
+      extended: true,
+    })
+  );
 
   try {
     await server.start();

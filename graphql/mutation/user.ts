@@ -4,6 +4,8 @@ import { contextType } from "@type/contextType";
 import authErrorCheck from "../../util/error/authError";
 import transport from "../../util/mailer";
 
+//=============================================================================
+
 type signUpArgs = {
   username: string;
   nickname: string;
@@ -15,6 +17,8 @@ const SignUp = async (_: any, args: signUpArgs) => {
   await user.create({ ...args });
   return true;
 };
+
+//=============================================================================
 
 type sendMailArgs = {
   email: string;
@@ -41,11 +45,15 @@ const SendMail = async (_: any, args: sendMailArgs) => {
   }
 };
 
+//=============================================================================
+
 const LogOut = async (_: any, {}, context: contextType) => {
   const { req, res } = context;
   deleteToken(req, res);
   return true;
 };
+
+//=============================================================================
 
 type updateUserInfoArgs = {
   nickname?: string;
@@ -72,5 +80,7 @@ const UpdateUserInfo = async (
   );
   return true;
 };
+
+//=============================================================================
 
 export default { SignUp, SendMail, LogOut, UpdateUserInfo };

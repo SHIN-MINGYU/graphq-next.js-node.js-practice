@@ -6,6 +6,9 @@ import { contextType } from "@type/contextType";
 
 const CHECK_CHAT: string = "CHECK_CHAT";
 const CHECK_ROOM: string = "CHECK_ROOM";
+const ENTER_ROOM: string = "ENTER_ROOM";
+
+//=============================================================================
 
 // Send Chat Mutation
 type chatLogArgs = {
@@ -33,9 +36,13 @@ const SendChat = (_: any, args: chatLogArgs, context: contextType) => {
 
 //searchRoom
 type searchRoomArgs = {
-  uid: ObjectId;
+  uid?: ObjectId;
+  userType: string;
   type: string;
+  userInfo: string;
 };
+
+//=============================================================================
 
 const SearchRoom = async (_: any, args: searchRoomArgs) => {
   const { uid, type } = args;
@@ -64,6 +71,23 @@ const SearchRoom = async (_: any, args: searchRoomArgs) => {
   return _id;
 };
 
+//=============================================================================
+
+const EnterRoom = (_: any, args: any) => {
+  const { chat_room, uid, userType } = args;
+  const userInfo = JSON.parse(args.userInfo);
+  pubsub.publish(ENTER_ROOM, {
+    EnterRoom: {
+      chat_room,
+      uid,
+      userType,
+      userInfo,
+    },
+  });
+  return true;
+};
+
+//=============================================================================
 type LeaveRoomArgs = {
   chat_room: string;
 };
@@ -80,4 +104,6 @@ const LeaveRoom = async (_: any, args: LeaveRoomArgs) => {
   return true;
 };
 
-export default { SendChat, SearchRoom, LeaveRoom };
+//=============================================================================
+
+export default { SendChat, SearchRoom, LeaveRoom, EnterRoom };

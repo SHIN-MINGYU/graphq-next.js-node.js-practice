@@ -4,6 +4,8 @@ import refreshTokenSession from "@schemas/refreshTokenSession";
 import { contextType } from "@type/contextType";
 import { tokenSession } from "@type/session";
 
+//=============================================================================
+
 const restoreAccessToken = async (_: any, {}, context: contextType) => {
   const { refreshToken } = context.req.cookies;
   const refresh = refreshToken ? verifyToken(refreshToken) : null;
@@ -28,5 +30,7 @@ const restoreAccessToken = async (_: any, {}, context: contextType) => {
   );
   return newAccessToken;
 };
+
+//=============================================================================
 
 export default { restoreAccessToken };
