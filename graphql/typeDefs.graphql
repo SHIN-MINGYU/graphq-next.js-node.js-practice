@@ -14,17 +14,17 @@ type Mutation {
     chat_room: ID!
     uid: ID
     log: String
-    username: String
+    nickname: String
     createAt: Date
   ): String
-  SearchRoom(uid: ID, type: String): String
+  SearchRoom(uid: ID, type: String!, category: String!): String
   EnterRoom(
     chat_room: ID!
     uid: ID!
     userType: String
     userInfo: String
   ): Boolean
-  LeaveRoom(chat_room: ID!, uid: ID): Boolean
+  LeaveRoom(chat_room: ID!, uid: ID, nickname: String): Boolean
   SignUp(
     username: String!
     nickname: String!
@@ -39,12 +39,13 @@ type Mutation {
 
 type Subscription {
   CheckChat(chat_room: ID!): ChatLog
-  CheckRoom(chat_room: ID!): Leave
+  LeaveRoom(chat_room: ID!): LeaveRoom
   EnterRoom(chat_room: ID!): EnterRoom
 }
 
-type Leave {
+type LeaveRoom {
   leave: Boolean
+  nickname: String
 }
 
 type EnterRoomUserInfo {
@@ -65,7 +66,7 @@ type EnterRoom {
 type ChatLog {
   chat_room: ID!
   uid: ID
-  username: String
+  nickname: String
   log: String
   createAt: Date
 }
@@ -73,6 +74,7 @@ type ChatLog {
 type ChatRoom {
   _id: ID!
   type: String
+  category: String
   uid: [ID]
 }
 

@@ -27,10 +27,15 @@ const EnterRoom = {
 
 //=============================================================================
 
-const CheckRoom = {
-  subscribe: () => pubsub!.asyncIterator(["CHECK_ROOM"]),
+const LeaveRoom = {
+  subscribe: withFilter(
+    () => pubsub!.asyncIterator(["LEAVE_ROOM"]),
+    (payload, variables) => {
+      return payload.CheckRoom.chat_room === variables.chat_room;
+    }
+  ),
 };
 
 //=============================================================================
 
-export default { CheckChat, CheckRoom, EnterRoom };
+export default { CheckChat, LeaveRoom, EnterRoom };

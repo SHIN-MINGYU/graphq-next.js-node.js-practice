@@ -3,9 +3,10 @@ import ChatLogs from "@schemas/chat_log";
 import { pubsub } from "../pubsub";
 import { ObjectId } from "mongoose";
 import { contextType } from "@type/contextType";
+import searchRoom from "../../util/searchRoom";
 
 const CHECK_CHAT: string = "CHECK_CHAT";
-const CHECK_ROOM: string = "CHECK_ROOM";
+const LEAVE_ROOM: string = "LEAVE_ROOM";
 const ENTER_ROOM: string = "ENTER_ROOM";
 
 //=============================================================================
@@ -15,18 +16,14 @@ type chatLogArgs = {
   chat_room: string;
   uid: string;
   log: string;
-  username: string;
+  nickname: string;
   createAt: Date;
 };
 
 const SendChat = (_: any, args: chatLogArgs, context: contextType) => {
   //subscribe publish check_chat
   // @ts-ignore
-  const { user } = context.req;
-  if (user) {
-    args.uid = user.uid;
-    args.username = user.username;
-  }
+
   pubsub.publish(CHECK_CHAT, {
     CheckChat: { ...args },
   });
@@ -37,24 +34,21 @@ const SendChat = (_: any, args: chatLogArgs, context: contextType) => {
 //searchRoom
 type searchRoomArgs = {
   uid?: ObjectId;
-  userType: string;
   type: string;
-  userInfo: string;
+  category: string;
 };
 
 //=============================================================================
 
 const SearchRoom = async (_: any, args: searchRoomArgs) => {
-  const { uid, type } = args;
+  const { uid, type, category } = args;
 
-  const findChatRoom = await ChatRooms.find({
-    type,
-    where: "this.uid.length < 2",
-  });
+  const findChatRoom = await searchRoom(type, category);
 
   if (findChatRoom.length === 0) {
     const createRoom = await ChatRooms.create({
-      type: type,
+      category,
+      type,
       uid: [uid],
     });
     return createRoom._id;
@@ -90,14 +84,16 @@ const EnterRoom = (_: any, args: any) => {
 //=============================================================================
 type LeaveRoomArgs = {
   chat_room: string;
+  nickname: string;
 };
 
 //LeaveRoom
 const LeaveRoom = async (_: any, args: LeaveRoomArgs) => {
-  const { chat_room } = args;
-  //subscribe publish check_room
-  pubsub.publish(CHECK_ROOM, {
-    CheckRoom: { leave: true },
+  const { chat_room, nickname } = args;
+
+  //subscribe publish LEAVE_ROOM
+  pubsub.publish(LEAVE_ROOM, {
+    CheckRoom: { chat_room, leave: true, nickname },
   });
   await ChatRooms.deleteOne({ _id: chat_room });
 

@@ -6,6 +6,7 @@ const {
 
 const chat_room_schema = new Schema({
   type: String,
+  category: String,
   uid: [ObjectId /* { type: ObjectId, ref: "user", required: "true" } */],
 });
 
