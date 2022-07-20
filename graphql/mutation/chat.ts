@@ -90,10 +90,13 @@ type LeaveRoomArgs = {
 //LeaveRoom
 const LeaveRoom = async (_: any, args: LeaveRoomArgs) => {
   const { chat_room, nickname } = args;
-
   //subscribe publish LEAVE_ROOM
   pubsub.publish(LEAVE_ROOM, {
-    CheckRoom: { chat_room, leave: true, nickname },
+    LeaveRoom: {
+      chat_room,
+      leave: true,
+      nickname,
+    },
   });
   await ChatRooms.deleteOne({ _id: chat_room });
 

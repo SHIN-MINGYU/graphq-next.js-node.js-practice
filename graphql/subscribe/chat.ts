@@ -6,9 +6,9 @@ import { pubsub } from "../pubsub";
 const CheckChat = {
   subscribe: withFilter(
     () => pubsub!.asyncIterator(["CHECK_CHAT"]),
-    (payload, variables) => {
-      console.log("payload : ", payload, "variabales : ", variables);
-      return payload.CheckChat.chat_room === variables.chat_room;
+    ({ CheckChat }, variables) => {
+      console.log("payload : ", CheckChat, "variabales : ", variables);
+      return CheckChat.chat_room === variables.chat_room;
     }
   ),
 };
@@ -31,7 +31,7 @@ const LeaveRoom = {
   subscribe: withFilter(
     () => pubsub!.asyncIterator(["LEAVE_ROOM"]),
     (payload, variables) => {
-      return payload.CheckRoom.chat_room === variables.chat_room;
+      return payload.LeaveRoom.chat_room === variables.chat_room;
     }
   ),
 };

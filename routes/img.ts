@@ -1,6 +1,6 @@
 import express from "express";
 import upload from "../context/multer";
-import verifyToken from "../jwt/verifyToken";
+import verifyToken from "@jwt/verifyToken";
 import User from "@schemas/user";
 
 const router = express.Router();
