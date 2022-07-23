@@ -63,7 +63,7 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
   });
 
   const corsOptions = {
-    origin: ["http://localhost:3000", "https://studio.apollographql.com"],
+    origin: [process.env.CLIENT_URL || "", "https://studio.apollographql.com"],
     credentials: true,
   };
 
@@ -94,9 +94,9 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
       path: "/graphql",
     });
     await new Promise<void>((resolve) =>
-      httpServer.listen({ port: 4000 }, resolve)
+      httpServer.listen({ port: process.env.PORT }, resolve)
     );
-    console.log(`Server ready at http://localhost:4000${server.graphqlPath}`);
+    console.log(`Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`);
   } catch (err) {
     console.log(err);
   }
