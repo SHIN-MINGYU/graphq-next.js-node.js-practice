@@ -1,7 +1,7 @@
 import {randomBytes, pbkdf2} from 'crypto';
 
 
-const createHasedPassword =  (password : string, dbSalt? : string) =>{
+const createHashedPassword  =  (password : string, dbSalt? : string) : Promise<{password : string, salt : string}> | undefined =>{
     try{
         let salt : string;
         if(dbSalt) salt = dbSalt;
@@ -16,4 +16,4 @@ const createHasedPassword =  (password : string, dbSalt? : string) =>{
     }
 }
 
-export default createHasedPassword;
+export default createHashedPassword;

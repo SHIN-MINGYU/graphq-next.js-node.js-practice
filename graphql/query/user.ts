@@ -3,7 +3,7 @@ import createToken from "@jwt/createToken";
 import createSession from "@session/createSession";
 import { contextType } from "@type/contextType";
 import authErrorCheck from "../../util/error/authError";
-import createHasedPassword from "util/user/createHashedPassword";
+import createHashedPassword from "util/user/createHashedPassword";
 
 //=============================================================================
 
@@ -15,7 +15,8 @@ interface LoginArgs {
 const Login = async (_: any, args: LoginArgs, context: any) => {
   const { username, password } = args;
   const user = await User.findOne({ username });
-  if (user && user.password == await createHasedPassword(password!, user.salt!)) {
+  const hashedValue = await createHashedPassword(password!, user?.salt );
+  if (user && user.password === hashedValue!.password) {
     // create session
     const sessionId = await createSession({ username, uid: user._id });
 

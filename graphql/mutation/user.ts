@@ -1,7 +1,7 @@
 import deleteToken from "@jwt/deleteToken";
 import user from "@schemas/user";
 import { contextType } from "@type/contextType";
-import createHasedPassword from "util/user/createHashedPassword";
+import createHashedPassword from "util/user/createHashedPassword";
 import authErrorCheck from "../../util/error/authError";
 import transport from "../../util/mailer";
 
@@ -17,8 +17,9 @@ type signUpArgs = {
 
 const SignUp = async (_: any, args: signUpArgs) => {
   const {password,...info} = args;
-  const hashedPassword = await createHasedPassword(password)
-  await user.create({ password: hashedPassword,...info});
+  const hashedPassword = await createHashedPassword(password);
+  if(hashedPassword) await user.create({ password: hashedPassword.password, salt : hashedPassword.salt,...info});
+  else return false;
   return true;
 };
 
