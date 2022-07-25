@@ -24,7 +24,7 @@ type Mutation {
     userType: String
     userInfo: String
   ): Boolean
-  LeaveRoom(chat_room: ID!, uid: ID, nickname: String): Boolean
+  LeaveRoom(chat_room: ID!,chat_type: String! ,uid: ID, nickname: String): Boolean
   SignUp(
     username: String!
     nickname: String!
@@ -46,6 +46,7 @@ type Subscription {
 type LeaveRoom {
   leave: Boolean
   nickname: String
+  uid: String
 }
 
 type EnterRoomUserInfo {

@@ -4,13 +4,11 @@ import { AuthenticationError } from "apollo-server-core";
 
 export default function deserializeUser(req: Request) {
   const { refreshToken } = req.cookies;
-  const accessToken = req.headers.authorization;
-
+  const accessToken = req.headers.authorization; 
   const payload = verifyToken(accessToken);
-
   if (!payload && refreshToken) {
     return {
-      authError: new AuthenticationError("Auth Error : adsfasfd"),
+      authError: new AuthenticationError("Auth Error : need accessToken"),
     };
   }
   if (!payload) {

@@ -84,22 +84,25 @@ const EnterRoom = (_: any, args: any) => {
 //=============================================================================
 type LeaveRoomArgs = {
   chat_room: string;
+  chat_type : string;
   nickname: string;
+  uid : string;
 };
 
 //LeaveRoom
 const LeaveRoom = async (_: any, args: LeaveRoomArgs) => {
-  const { chat_room, nickname } = args;
+  const { chat_room, chat_type ,nickname, uid } = args;
   //subscribe publish LEAVE_ROOM
   pubsub.publish(LEAVE_ROOM, {
     LeaveRoom: {
       chat_room,
       leave: true,
       nickname,
+      uid
     },
   });
-  await ChatRooms.deleteOne({ _id: chat_room });
-
+  if(chat_type === "oneonone") await ChatRooms.deleteOne({ _id: chat_room });
+  else if(chat_type === "group") console.log("this is group chat room")
   return true;
 };
 
