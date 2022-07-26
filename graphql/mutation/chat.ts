@@ -83,10 +83,10 @@ const EnterRoom = (_: any, args: any) => {
 
 //=============================================================================
 type LeaveRoomArgs = {
-  chat_room: string;
+  chat_room: ObjectId;
   chat_type : string;
   nickname: string;
-  uid : string;
+  uid : ObjectId;
 };
 
 //LeaveRoom
@@ -102,7 +102,15 @@ const LeaveRoom = async (_: any, args: LeaveRoomArgs) => {
     },
   });
   if(chat_type === "oneonone") await ChatRooms.deleteOne({ _id: chat_room });
-  else if(chat_type === "group") console.log("this is group chat room")
+  else if(chat_type === "group"){
+/*     await ChatRooms.findOneAndUpdate(
+      {_id : chat_room},
+      {
+      $pullAll : {
+        uid : [uid]
+      }
+    }) */
+  }
   return true;
 };
 
