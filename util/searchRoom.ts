@@ -2,7 +2,7 @@ import ChatRooms from "../schemas/chat_room";
 
 const searchRoom = async (type: string, category: string) => {
   const args = { type, category };
-  const MAX_Index = type == "oneonone" ? 1 : 3;
+
   let findChatRoom;
   if (type === "oneonone") {
     findChatRoom = await ChatRooms.find({

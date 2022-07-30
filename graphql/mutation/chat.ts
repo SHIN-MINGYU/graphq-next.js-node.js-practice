@@ -3,7 +3,6 @@ import ChatLogs from "@schemas/chat_log";
 import { pubsub } from "../pubsub";
 import { ObjectId } from "mongoose";
 import { contextType } from "@type/contextType";
-import searchRoom from "../../util/searchRoom";
 
 const CHECK_CHAT: string = "CHECK_CHAT";
 const LEAVE_ROOM: string = "LEAVE_ROOM";
@@ -28,42 +27,7 @@ const SendChat = (_: any, args: chatLogArgs, context: contextType) => {
     CheckChat: { ...args },
   });
   ChatLogs.create({ ...args });
-  ChatLogs.create({});
   return args.log;
-};
-
-//searchRoom
-type searchRoomArgs = {
-  uid?: ObjectId;
-  type: string;
-  category: string;
-};
-
-//=============================================================================
-
-const SearchRoom = async (_: any, args: searchRoomArgs) => {
-  const { uid, type, category } = args;
-
-  const findChatRoom = await searchRoom(type, category);
-
-  if (findChatRoom.length === 0) {
-    const createRoom = await ChatRooms.create({
-      category,
-      type,
-      uid: [uid],
-    });
-    return createRoom._id;
-  }
-
-  const roomLen = findChatRoom.length;
-
-  const SELECTED_NUM = Math.floor(Math.random() * roomLen);
-
-  const _id = findChatRoom[SELECTED_NUM]._id;
-
-  await ChatRooms.updateOne({ _id }, { $push: { uid } }).orFail();
-
-  return _id;
 };
 
 //=============================================================================
@@ -118,4 +82,4 @@ const LeaveRoom = async (_: any, args: LeaveRoomArgs) => {
 
 //=============================================================================
 
-export default { SendChat, SearchRoom, LeaveRoom, EnterRoom };
+export default { SendChat, LeaveRoom, EnterRoom };
