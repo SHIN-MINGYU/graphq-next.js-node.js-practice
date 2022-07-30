@@ -4,6 +4,7 @@ import createSession from "@session/createSession";
 import { contextType } from "@type/contextType";
 import authErrorCheck from "../../util/error/authError";
 import createHashedPassword from "util/user/createHashedPassword";
+import { ObjectId } from "mongoose";
 
 //=============================================================================
 
@@ -15,7 +16,7 @@ interface LoginArgs {
 const Login = async (_: any, args: LoginArgs, context: any) => {
   const { username, password } = args;
   const user = await User.findOne({ username });
-  const hashedValue = await createHashedPassword(password!, user?.salt );
+  const hashedValue = await createHashedPassword(password!, user?.salt);
   if (user && user.password === hashedValue!.password) {
     // create session
     const sessionId = await createSession({ username, uid: user._id });
@@ -50,11 +51,11 @@ const UserInfo = async (_: any, {}, context: contextType) => {
 
 //=============================================================================
 
-type SearchUser = {
+type SearchUserArgs = {
   username: string;
 };
 
-const SearchUser = async (_: any, args: SearchUser) => {
+const SearchUser = async (_: any, args: SearchUserArgs) => {
   const { username } = args;
   if (await User.findOne({ username })) {
     return true;
@@ -64,4 +65,15 @@ const SearchUser = async (_: any, args: SearchUser) => {
 
 //=============================================================================
 
-export default { Login, UserInfo, SearchUser };
+const GetF4F = async (_: any, {}, context: contextType) => {
+  authErrorCheck(context);
+  // @ts-ignore
+  const user = await User.findOne({ _id: context.req.user.uid });
+  const F4F = user?.follower?.filter((item) => user.following?.includes(item));
+  const F4FUserInfo = await User.find({ _id: { $in: F4F } });
+  return F4FUserInfo;
+};
+
+//=============================================================================
+
+export default { Login, UserInfo, SearchUser, GetF4F };

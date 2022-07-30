@@ -4,7 +4,7 @@ import { AuthenticationError } from "apollo-server-core";
 
 export default function deserializeUser(req: Request) {
   const { refreshToken } = req.cookies;
-  const accessToken = req.headers.authorization; 
+  const accessToken = req.headers.authorization;
   const payload = verifyToken(accessToken);
   if (!payload && refreshToken) {
     return {
@@ -16,5 +16,6 @@ export default function deserializeUser(req: Request) {
   }
   // @ts-ignore
   req.user = payload.userInfo;
+
   return "";
 }

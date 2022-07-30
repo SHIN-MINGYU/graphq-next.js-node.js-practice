@@ -1,10 +1,10 @@
 import deleteToken from "@jwt/deleteToken";
 import user from "@schemas/user";
 import { contextType } from "@type/contextType";
+import { ObjectId } from "mongoose";
 import createHashedPassword from "util/user/createHashedPassword";
 import authErrorCheck from "../../util/error/authError";
 import transport from "../../util/mailer";
-
 
 //=============================================================================
 
@@ -16,9 +16,14 @@ type signUpArgs = {
 };
 
 const SignUp = async (_: any, args: signUpArgs) => {
-  const {password,...info} = args;
+  const { password, ...info } = args;
   const hashedPassword = await createHashedPassword(password);
-  if(hashedPassword) await user.create({ password: hashedPassword.password, salt : hashedPassword.salt,...info});
+  if (hashedPassword)
+    await user.create({
+      password: hashedPassword.password,
+      salt: hashedPassword.salt,
+      ...info,
+    });
   else return false;
   return true;
 };
@@ -88,4 +93,32 @@ const UpdateUserInfo = async (
 
 //=============================================================================
 
-export default { SignUp, SendMail, LogOut, UpdateUserInfo };
+type sendFollowArgs = {
+  uid: ObjectId;
+};
+
+const SendFollow = async (
+  _: any,
+  args: sendFollowArgs,
+  context: contextType
+) => {
+  const { uid } = args;
+
+  // @ts-ignore
+  await user.findOneAndUpdate(
+    { _id: uid },
+    // @ts-ignore
+    { $push: { follower: context.req.user.uid } }
+  );
+
+  await user.findOneAndUpdate(
+    // @ts-ignore
+    { _id: context.req.user.uid },
+    { $push: { following: uid } }
+  );
+  return true;
+};
+
+//=============================================================================
+
+export default { SignUp, SendMail, LogOut, UpdateUserInfo, SendFollow };

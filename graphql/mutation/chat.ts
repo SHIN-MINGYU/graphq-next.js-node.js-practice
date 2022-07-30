@@ -28,6 +28,7 @@ const SendChat = (_: any, args: chatLogArgs, context: contextType) => {
     CheckChat: { ...args },
   });
   ChatLogs.create({ ...args });
+  ChatLogs.create({});
   return args.log;
 };
 
@@ -84,32 +85,33 @@ const EnterRoom = (_: any, args: any) => {
 //=============================================================================
 type LeaveRoomArgs = {
   chat_room: ObjectId;
-  chat_type : string;
+  chat_type: string;
   nickname: string;
-  uid : ObjectId;
+  uid: ObjectId;
 };
 
 //LeaveRoom
 const LeaveRoom = async (_: any, args: LeaveRoomArgs) => {
-  const { chat_room, chat_type ,nickname, uid } = args;
+  const { chat_room, chat_type, nickname, uid } = args;
   //subscribe publish LEAVE_ROOM
   pubsub.publish(LEAVE_ROOM, {
     LeaveRoom: {
       chat_room,
       leave: true,
       nickname,
-      uid
+      uid,
     },
   });
-  if(chat_type === "oneonone") await ChatRooms.deleteOne({ _id: chat_room });
-  else if(chat_type === "group"){
-/*     await ChatRooms.findOneAndUpdate(
-      {_id : chat_room},
+  if (chat_type === "oneonone") await ChatRooms.deleteOne({ _id: chat_room });
+  else if (chat_type === "group") {
+    await ChatRooms.findOneAndUpdate(
+      { _id: chat_room },
       {
-      $pullAll : {
-        uid : [uid]
+        $pullAll: {
+          uid: [uid],
+        },
       }
-    }) */
+    );
   }
   return true;
 };
