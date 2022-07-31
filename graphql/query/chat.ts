@@ -3,6 +3,7 @@ import ChatRooms from "@schemas/chat_room";
 import ChatLogs from "@schemas/chat_log";
 import searchRoom from "../../util/searchRoom";
 import { ObjectId } from "mongoose";
+import { contextType } from "@type/contextType";
 
 //=============================================================================
 
@@ -23,15 +24,15 @@ const ChatLog = (_: any, args: chatLogArgs) => {
 //searchRoom
 type searchRoomArgs = {
   uid?: ObjectId;
-  type: string;
-  category: string;
+  type: "oneonone" | "group";
+  category: "public";
 };
 
-const SearchRoom = async (_: any, args: searchRoomArgs) => {
+const SearchRandomRoom = async (_: any, args: searchRoomArgs) => {
+  // public room
   const { uid, type, category } = args;
 
   const findChatRoom = await searchRoom(type, category);
-
   if (findChatRoom.length === 0) {
     const createRoom = await ChatRooms.create({
       category,
@@ -54,4 +55,40 @@ const SearchRoom = async (_: any, args: searchRoomArgs) => {
 
 //=============================================================================
 
-export default { ChatLog, SearchRoom };
+type getRoomIdArgs = {
+  uid: ObjectId;
+  type: "oneonone" | "group";
+  category: "private";
+};
+
+const GetPrivateRoom = async (
+  _: any,
+  args: getRoomIdArgs,
+  context: contextType
+) => {
+  const { uid, category, type } = args;
+  const findChatRoom = await ChatRooms.findOne({
+    category,
+    type,
+    uid: {
+      $size: 2,
+      // @ts-ignore
+      $all: [uid, context.req.user.uid],
+    },
+  });
+  if (!findChatRoom) {
+    const createRoom = await ChatRooms.create({
+      category,
+      type,
+      // @ts-ignore
+      uid: [uid, context.req.user.uid],
+    });
+    return createRoom._id;
+  }
+
+  return findChatRoom._id;
+};
+
+//=============================================================================
+
+export default { ChatLog, SearchRandomRoom, GetPrivateRoom };
