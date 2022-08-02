@@ -1,7 +1,7 @@
 scalar Date
 
 type Query {
-  ChatLog(chat_room: ID!): [ChatLog]
+  ChatLog(chat_room: ID!): [GetChatLog]
   ChatRoom: [ChatRoom]
   ContryPerVisitor: [ContryPerVisitor]
   Login(username: String!, password: String!): String
@@ -10,6 +10,7 @@ type Query {
   SearchRandomRoom(uid: ID, type: String!, category: String!): String
   GetPrivateRoom(uid: ID!, type: String!, category: String!): String
   GetF4F(uid: ID): [User]
+  GetPrivateRoomList: [PrivateRoom]
 }
 
 type Mutation {
@@ -17,6 +18,7 @@ type Mutation {
     chat_room: ID!
     uid: ID
     log: String
+    imgPath: String
     nickname: String
     createAt: Date
   ): String
@@ -46,7 +48,7 @@ type Mutation {
 }
 
 type Subscription {
-  CheckChat(chat_room: ID!): ChatLog
+  CheckChat(chat_room: ID!): CheckChat
   LeaveRoom(chat_room: ID!): LeaveRoom
   EnterRoom(chat_room: ID!): EnterRoom
 }
@@ -70,9 +72,33 @@ type EnterRoom {
   userInfo: EnterRoomUserInfo
 }
 
+type PrivateRoom {
+  chatRoom: ID
+  lastChat: String
+  createAt: Date
+  user: [User]
+}
+
+type CheckChat implements ChatLog {
+  chat_room: ID!
+  uid: ID
+  nickname: String
+  log: String
+  imgPath: String
+  createAt: Date
+}
+
+type GetChatLog {
+  chat_room: ID!
+  uid: User
+  nickname: String
+  log: String
+  createAt: Date
+}
+
 #DB Types
 
-type ChatLog {
+interface ChatLog {
   chat_room: ID!
   uid: ID
   nickname: String

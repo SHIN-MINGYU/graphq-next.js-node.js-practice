@@ -7,7 +7,7 @@ const transport = nodemailer.createTransport({
   secrue: true,
   auth: {
     user: "smg20004@naver.com",
-    pass: "@tlsalsrb123",
+    pass: process.env.MY_PASSWORD,
   },
 } as any);
 export default transport;

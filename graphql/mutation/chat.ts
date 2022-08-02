@@ -12,9 +12,10 @@ const ENTER_ROOM: string = "ENTER_ROOM";
 
 // Send Chat Mutation
 type chatLogArgs = {
-  chat_room: string;
-  uid: string;
+  chat_room: ObjectId;
+  uid: ObjectId;
   log: string;
+  imgPath: string;
   nickname: string;
   createAt: Date;
 };

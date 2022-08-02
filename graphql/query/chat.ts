@@ -1,9 +1,11 @@
 import { getItemsToMongo } from "../action";
 import ChatRooms from "@schemas/chat_room";
 import ChatLogs from "@schemas/chat_log";
+import Users from "@schemas/user";
 import searchRoom from "../../util/searchRoom";
 import { ObjectId } from "mongoose";
 import { contextType } from "@type/contextType";
+import authErrorCheck from "../../util/error/authError";
 
 //=============================================================================
 
@@ -11,12 +13,14 @@ type chatLogArgs = {
   chat_room: string;
 };
 
-const ChatLog = (_: any, args: chatLogArgs) => {
+const ChatLog = async (_: any, args: chatLogArgs) => {
   const { chat_room } = args;
-  return getItemsToMongo(ChatLogs, {
+  const data = await ChatLogs.find({
     chat_room,
-    $orderby: { createAt: -1 },
-  });
+  })
+    .populate("uid", ["imgPath", "nickname"])
+    .sort({ createAt: -1 });
+  return data;
 };
 
 //=============================================================================
@@ -66,6 +70,7 @@ const GetPrivateRoom = async (
   args: getRoomIdArgs,
   context: contextType
 ) => {
+  authErrorCheck(context);
   const { uid, category, type } = args;
   const findChatRoom = await ChatRooms.findOne({
     category,
@@ -91,4 +96,43 @@ const GetPrivateRoom = async (
 
 //=============================================================================
 
-export default { ChatLog, SearchRandomRoom, GetPrivateRoom };
+const GetPrivateRoomList = async (
+  _: unknown,
+  __: unknown,
+  context: contextType
+) => {
+  authErrorCheck(context);
+
+  const result: any = [];
+
+  const chatRooms = await ChatRooms.find({
+    // @ts-ignore
+    uid: { $all: [context.req.user.uid] },
+  });
+
+  for (let chatRoom of chatRooms) {
+    const chatLog = await ChatLogs.findOne({
+      chat_room: chatRoom._id,
+    }).sort({ createAt: -1 });
+    const user = await Users.find({
+      // @ts-ignore
+      _id: { $in: chatRoom.uid?.filter((el) => el != context.req.user.uid) },
+    });
+    result.push({
+      chatRoom: chatRoom._id,
+      createAt: chatLog?.createAt,
+      lastChat: chatLog?.log,
+      user: user,
+    });
+  }
+  return result;
+};
+
+//=============================================================================
+
+export default {
+  ChatLog,
+  SearchRandomRoom,
+  GetPrivateRoom,
+  GetPrivateRoomList,
+};
