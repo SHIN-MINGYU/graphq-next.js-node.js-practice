@@ -67,6 +67,10 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
     credentials: true,
   };
 
+  app.get('/',(req,res)=>{
+    return res.send('hi this is the forest api page');
+  })
+  
   app.use(cookieParser());
   app.use(cors(corsOptions));
   app.use("/img", express.static("uploads"));
