@@ -1,28 +1,39 @@
+import { config } from "dotenv";
+import path from "path";
+
+config({ path: path.join(__dirname, `.env.${process.env.NODE_ENV}`) });
+
 import { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
-import path from "path";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { readFileSync } from "fs";
-import express from "express";
+import express, { Request, Response } from "express";
 import http from "http";
 import WebSocket from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import connect from "./schemas";
 import resolvers from "./graphql/resolvers";
 import { pubsub } from "./graphql/pubsub";
-import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import deserializeUser from "./context/deserializeUser";
 import imgRouter from "./routes/img";
 import cors from "cors";
 import bodyParser from "body-parser";
+import { userInfo } from "./type/session";
 
-config();
 const typeDefs: string = readFileSync(
   require.resolve(path.join(__dirname, "./graphql/typeDefs.graphql"))
 ).toString();
 // read graphql files and insert into typeDefs variables for start apollo server
 connect();
+
+declare global {
+  namespace Express {
+    interface Request {
+      user: userInfo;
+    }
+  }
+}
 
 async function startApolloServer(typeDefs: string, resolvers: any) {
   const app = express();
@@ -42,7 +53,7 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
     schema,
     csrfPrevention: true,
     cache: "bounded",
-    context: ({ req, res }) => ({
+    context: ({ req, res }: { req: Request; res: Response }) => ({
       pubsub,
       deserializeUser: deserializeUser(req),
       res,
@@ -67,10 +78,10 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
     credentials: true,
   };
 
-  app.get('/',(req,res)=>{
-    return res.send('hi this is the forest api page');
-  })
-  
+  app.get("/", (req, res) => {
+    return res.send("hi this is the forest api page");
+  });
+
   app.use(cookieParser());
   app.use(cors(corsOptions));
   app.use("/img", express.static("uploads"));

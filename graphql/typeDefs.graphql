@@ -9,8 +9,9 @@ type Query {
   SearchUser(username: String): Boolean
   SearchRandomRoom(uid: ID, type: String!, category: String!): String
   GetPrivateRoom(uid: ID!, type: String!, category: String!): String
-  GetF4F(uid: ID): [User]
+  GetF4F: [User]
   GetPrivateRoomList: [PrivateRoom]
+  GetFollowerNotF4F: [User]
 }
 
 type Mutation {
@@ -45,6 +46,7 @@ type Mutation {
   UpdateUserInfo(nickname: String, gender: String, description: String): Boolean
   SendMail(email: String!): String
   SendFollow(uid: ID!): Boolean
+  SendUnFollow(uid: ID!): Boolean
 }
 
 type Subscription {

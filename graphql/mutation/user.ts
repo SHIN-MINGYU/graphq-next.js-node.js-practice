@@ -102,6 +102,8 @@ const SendFollow = async (
   args: sendFollowArgs,
   context: contextType
 ) => {
+  authErrorCheck(context);
+
   const { uid } = args;
 
   // @ts-ignore
@@ -121,4 +123,41 @@ const SendFollow = async (
 
 //=============================================================================
 
-export default { SignUp, SendMail, LogOut, UpdateUserInfo, SendFollow };
+type sendUnFollowArgs = {
+  uid: ObjectId;
+};
+
+const SendUnFollow = async (
+  _: any,
+  args: sendUnFollowArgs,
+  context: contextType
+) => {
+  authErrorCheck(context);
+
+  const { uid } = args;
+
+  // @ts-ignore
+  await user.findOneAndUpdate(
+    { _id: uid },
+    // @ts-ignore
+    { $pullAll: { follower: [context.req.user.uid] } }
+  );
+
+  await user.findOneAndUpdate(
+    // @ts-ignore
+    { _id: context.req.user.uid },
+    { $pullAll: { following: [uid] } }
+  );
+  return true;
+};
+
+//=============================================================================
+
+export default {
+  SignUp,
+  SendMail,
+  LogOut,
+  UpdateUserInfo,
+  SendFollow,
+  SendUnFollow,
+};

@@ -75,4 +75,23 @@ const GetF4F = async (_: any, {}, context: contextType) => {
 
 //=============================================================================
 
-export default { Login, UserInfo, SearchUser, GetF4F };
+const GetFollowerNotF4F = async (_: any, {}, context: contextType) => {
+  authErrorCheck(context);
+
+  const user = await User.findOne({ _id: context.req.user.uid });
+  const NotF4F = user?.follower?.filter(
+    (item) => !user.following?.includes(item)
+  );
+  const NotF4FUserInfo = await User.find({ _id: { $in: NotF4F } });
+  return NotF4FUserInfo;
+};
+
+//=============================================================================
+
+export default {
+  Login,
+  UserInfo,
+  SearchUser,
+  GetF4F,
+  GetFollowerNotF4F,
+};

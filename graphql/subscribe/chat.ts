@@ -19,7 +19,6 @@ const EnterRoom = {
   subscribe: withFilter(
     () => pubsub!.asyncIterator(["ENTER_ROOM"]),
     (payload, variables) => {
-      console.log(payload.EnterRoom.chat_room === variables.chat_room);
       return payload.EnterRoom.chat_room === variables.chat_room;
     }
   ),

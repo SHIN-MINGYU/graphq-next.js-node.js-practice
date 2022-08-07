@@ -32,11 +32,17 @@ type searchRoomArgs = {
   category: "public";
 };
 
-const SearchRandomRoom = async (_: any, args: searchRoomArgs) => {
+const SearchRandomRoom = async (
+  _: any,
+  args: searchRoomArgs,
+  context: contextType
+) => {
   // public room
+
   const { uid, type, category } = args;
 
   const findChatRoom = await searchRoom(type, category);
+
   if (findChatRoom.length === 0) {
     const createRoom = await ChatRooms.create({
       category,
@@ -106,6 +112,7 @@ const GetPrivateRoomList = async (
   const result: any = [];
 
   const chatRooms = await ChatRooms.find({
+    category: "private",
     // @ts-ignore
     uid: { $all: [context.req.user.uid] },
   });
