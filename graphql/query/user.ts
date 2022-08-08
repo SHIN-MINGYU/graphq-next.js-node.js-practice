@@ -29,6 +29,10 @@ const Login = async (_: any, args: LoginArgs, context: any) => {
     context.res.cookie("refreshToken", refreshToken, {
       maxAge: 3.154e10,
       httpOnly: true,
+      origin: process.env.CLIENT_URL,
+      Credential: "include",
+      sameSite: "lax",
+      secure: true,
     });
     //return accessToken for remain in localStorage
     return accessToken;

@@ -59,6 +59,7 @@ const SendMail = async (_: any, args: sendMailArgs) => {
 
 const LogOut = async (_: any, {}, context: contextType) => {
   const { req, res } = context;
+  await user.updateOne({ _id: context.req.user.uid }, { status: false });
   deleteToken(req, res);
   return true;
 };
