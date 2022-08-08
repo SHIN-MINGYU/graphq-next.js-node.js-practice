@@ -1,4 +1,3 @@
-import { getItemsToMongo } from "../action";
 import ChatRooms from "@schemas/chat_room";
 import ChatLogs from "@schemas/chat_log";
 import Users from "@schemas/user";
@@ -32,11 +31,7 @@ type searchRoomArgs = {
   category: "public";
 };
 
-const SearchRandomRoom = async (
-  _: any,
-  args: searchRoomArgs,
-  context: contextType
-) => {
+const SearchRandomRoom = async (_: any, args: searchRoomArgs) => {
   // public room
 
   const { uid, type, category } = args;

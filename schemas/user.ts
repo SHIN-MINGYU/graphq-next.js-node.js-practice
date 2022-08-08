@@ -11,6 +11,7 @@ export const user_schema = new Schema({
   salt: String,
   gender: { type: String, default: "none" },
   password: String,
+  status: Boolean,
   description: String,
   imgPath: { type: String, default: process.env.MY_HOST + "/img/profile.png" },
   follower: [ObjectId],

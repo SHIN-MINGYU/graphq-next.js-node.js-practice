@@ -47,6 +47,8 @@ type Mutation {
   SendMail(email: String!): String
   SendFollow(uid: ID!): Boolean
   SendUnFollow(uid: ID!): Boolean
+  UserLogin: Boolean
+  UserLogout: Boolean
 }
 
 type Subscription {
@@ -126,6 +128,7 @@ type User {
   nickname: String!
   email: String
   gender: String
+  status: Boolean
   imgPath: String
   password: String
   description: String

@@ -153,6 +153,22 @@ const SendUnFollow = async (
 
 //=============================================================================
 
+const UserLogin = async (_: any, __: any, context: contextType) => {
+  authErrorCheck(context);
+  await user.updateOne({ _id: context.req.user.uid }, { status: true });
+  return true;
+};
+
+//=============================================================================
+
+const UserLogout = async (_: any, __: any, context: contextType) => {
+  authErrorCheck(context);
+  await user.updateOne({ _id: context.req.user.uid }, { status: false });
+  return true;
+};
+
+//=============================================================================
+
 export default {
   SignUp,
   SendMail,
@@ -160,4 +176,6 @@ export default {
   UpdateUserInfo,
   SendFollow,
   SendUnFollow,
+  UserLogin,
+  UserLogout,
 };
