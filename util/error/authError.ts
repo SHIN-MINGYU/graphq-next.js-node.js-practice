@@ -1,4 +1,4 @@
-import { contextType } from "@type/contextType";
+import { contextType } from "type/contextType";
 
 export default function authErrorCheck(context: contextType) {
   if (typeof context.deserializeUser !== "string") {

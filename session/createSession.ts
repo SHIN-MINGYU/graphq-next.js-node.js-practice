@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { ObjectId } from "mongodb";
-import refreshTokenSession from "../schemas/refreshTokenSession";
+import refreshTokenSession from "schemas/refreshTokenSession";
 
 type args = {
   username: string;

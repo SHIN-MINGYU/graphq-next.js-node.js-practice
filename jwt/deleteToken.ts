@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import refreshTokenSession from "../schemas/refreshTokenSession";
+import refreshTokenSession from "schemas/refreshTokenSession";
 import verifyToken from "./verifyToken";
 
 const deleteToken = (req: Request, res: Response): boolean => {
