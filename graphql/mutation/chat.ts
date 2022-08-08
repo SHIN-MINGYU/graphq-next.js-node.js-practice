@@ -22,7 +22,6 @@ type chatLogArgs = {
 
 const SendChat = (_: any, args: chatLogArgs, context: contextType) => {
   //subscribe publish check_chat
-  // @ts-ignore
 
   pubsub.publish(CHECK_CHAT, {
     CheckChat: { ...args },

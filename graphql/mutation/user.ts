@@ -80,7 +80,6 @@ const UpdateUserInfo = async (
   authErrorCheck(context);
   const { nickname, gender, description } = args;
   await user.updateOne(
-    // @ts-ignore
     { _id: context.req.user.uid },
     {
       nickname,
@@ -106,15 +105,12 @@ const SendFollow = async (
 
   const { uid } = args;
 
-  // @ts-ignore
   await user.findOneAndUpdate(
     { _id: uid },
-    // @ts-ignore
     { $push: { follower: context.req.user.uid } }
   );
 
   await user.findOneAndUpdate(
-    // @ts-ignore
     { _id: context.req.user.uid },
     { $push: { following: uid } }
   );
@@ -136,15 +132,12 @@ const SendUnFollow = async (
 
   const { uid } = args;
 
-  // @ts-ignore
   await user.findOneAndUpdate(
     { _id: uid },
-    // @ts-ignore
     { $pullAll: { follower: [context.req.user.uid] } }
   );
 
   await user.findOneAndUpdate(
-    // @ts-ignore
     { _id: context.req.user.uid },
     { $pullAll: { following: [uid] } }
   );

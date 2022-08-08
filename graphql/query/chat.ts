@@ -78,7 +78,6 @@ const GetPrivateRoom = async (
     type,
     uid: {
       $size: 2,
-      // @ts-ignore
       $all: [uid, context.req.user.uid],
     },
   });
@@ -86,7 +85,6 @@ const GetPrivateRoom = async (
     const createRoom = await ChatRooms.create({
       category,
       type,
-      // @ts-ignore
       uid: [uid, context.req.user.uid],
     });
     return createRoom._id;
@@ -108,7 +106,6 @@ const GetPrivateRoomList = async (
 
   const chatRooms = await ChatRooms.find({
     category: "private",
-    // @ts-ignore
     uid: { $all: [context.req.user.uid] },
   });
 
@@ -117,7 +114,6 @@ const GetPrivateRoomList = async (
       chat_room: chatRoom._id,
     }).sort({ createAt: -1 });
     const user = await Users.find({
-      // @ts-ignore
       _id: { $in: chatRoom.uid?.filter((el) => el != context.req.user.uid) },
     });
     result.push({

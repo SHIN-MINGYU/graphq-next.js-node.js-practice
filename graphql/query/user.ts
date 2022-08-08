@@ -43,7 +43,6 @@ const UserInfo = async (_: any, {}, context: contextType) => {
   // if deserializeUser's return value have authError
   // throw error
   authErrorCheck(context);
-  // @ts-ignore
   const user = await User.findOne({ _id: context.req.user.uid });
   return user;
 };
@@ -66,7 +65,6 @@ const SearchUser = async (_: any, args: SearchUserArgs) => {
 
 const GetF4F = async (_: any, {}, context: contextType) => {
   authErrorCheck(context);
-  // @ts-ignore
   const user = await User.findOne({ _id: context.req.user.uid });
   const F4F = user?.follower?.filter((item) => user.following?.includes(item));
   const F4FUserInfo = await User.find({ _id: { $in: F4F } });

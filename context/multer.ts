@@ -1,6 +1,6 @@
 import multer from "multer";
 import fs from "fs";
-import verifyToken from "@jwt/verifyToken";
+import verifyToken from "jwt/verifyToken";
 
 try {
   fs.readdirSync("uploads");
