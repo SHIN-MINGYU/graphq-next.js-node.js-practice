@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
-import { ObjectId } from "mongodb";
+import { ObjectId } from "mongoose";
 
 type userInfo = {
-  uid?: ObjectId;
+  uid?: ObjectId | any;
   username?: string;
   sessionId: string;
 };

@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { ObjectId } from "mongoose";
 import { SuperProperty } from "typescript";
 
 export type tokenSession = {
