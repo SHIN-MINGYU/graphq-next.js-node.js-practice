@@ -1,10 +1,10 @@
-import deleteToken from "jwt/deleteToken";
-import user from "schemas/user";
-import { contextType } from "type/contextType";
+import deleteToken from "../../jwt/deleteToken";
+import user from "../../schemas/user";
+import { contextType } from "../../type/contextType";
 import { ObjectId } from "mongoose";
-import createHashedPassword from "util/user/createHashedPassword";
-import authErrorCheck from "util/error/authError";
-import transport from "util/mailer";
+import createHashedPassword from "../../util/user/createHashedPassword";
+import authErrorCheck from "../../util/error/authError";
+import transport from "../../util/mailer";
 
 //=============================================================================
 

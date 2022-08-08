@@ -1,10 +1,10 @@
-import ChatRooms from "schemas/chat_room";
-import ChatLogs from "schemas/chat_log";
-import Users from "schemas/user";
-import searchRoom from "util/searchRoom";
+import ChatRooms from "../../schemas/chat_room";
+import ChatLogs from "../../schemas/chat_log";
+import Users from "../../schemas/user";
+import searchRoom from "../../util/searchRoom";
 import { ObjectId } from "mongoose";
-import { contextType } from "type/contextType";
-import authErrorCheck from "util/error/authError";
+import { contextType } from "../../type/contextType";
+import authErrorCheck from "../../util/error/authError";
 
 //=============================================================================
 

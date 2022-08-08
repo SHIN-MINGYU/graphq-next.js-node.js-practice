@@ -1,4 +1,4 @@
-import ChatRooms from "schemas/chat_room";
+import ChatRooms from "../schemas/chat_room";
 
 const searchRoom = async (type: string, category: string) => {
   const args = { type, category };

@@ -1,8 +1,8 @@
-import ChatRooms from "schemas/chat_room";
-import ChatLogs from "schemas/chat_log";
+import ChatRooms from "../../schemas/chat_room";
+import ChatLogs from "../../schemas/chat_log";
 import { pubsub } from "../pubsub";
 import { ObjectId } from "mongoose";
-import { contextType } from "type/contextType";
+import { contextType } from "../../type/contextType";
 
 const CHECK_CHAT: string = "CHECK_CHAT";
 const LEAVE_ROOM: string = "LEAVE_ROOM";

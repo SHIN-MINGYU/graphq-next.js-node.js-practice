@@ -1,8 +1,8 @@
-import createToken from "jwt/createToken";
-import verifyToken from "jwt/verifyToken";
-import refreshTokenSession from "schemas/refreshTokenSession";
-import { contextType } from "type/contextType";
-import { tokenSession } from "type/session";
+import createToken from "../../jwt/createToken";
+import verifyToken from "../../jwt/verifyToken";
+import refreshTokenSession from "../../schemas/refreshTokenSession";
+import { contextType } from "../../type/contextType";
+import { tokenSession } from "../../type/session";
 
 //=============================================================================
 

@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import verifyToken from "jwt/verifyToken";
+import { Request } from "express";
+import verifyToken from "../jwt/verifyToken";
 import { AuthenticationError } from "apollo-server-core";
 
 export default function deserializeUser(req: Request) {
