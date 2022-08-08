@@ -1,0 +1,138 @@
+scalar Date
+
+type Query {
+  ChatLog(chat_room: ID!): [GetChatLog]
+  ChatRoom: [ChatRoom]
+  ContryPerVisitor: [ContryPerVisitor]
+  Login(username: String!, password: String!): String
+  UserInfo: User
+  SearchUser(username: String): Boolean
+  SearchRandomRoom(uid: ID, type: String!, category: String!): String
+  GetPrivateRoom(uid: ID!, type: String!, category: String!): String
+  GetF4F: [User]
+  GetPrivateRoomList: [PrivateRoom]
+  GetFollowerNotF4F: [User]
+}
+
+type Mutation {
+  SendChat(
+    chat_room: ID!
+    uid: ID
+    log: String
+    imgPath: String
+    nickname: String
+    createAt: Date
+  ): String
+  EnterRoom(
+    chat_room: ID!
+    uid: ID!
+    userType: String
+    userInfo: String
+  ): Boolean
+  LeaveRoom(
+    chat_room: ID!
+    chat_type: String!
+    uid: ID
+    nickname: String
+  ): Boolean
+  SignUp(
+    username: String!
+    nickname: String!
+    password: String!
+    email: String
+  ): Boolean
+  LogOut: Boolean
+  restoreAccessToken: String
+  UpdateUserInfo(nickname: String, gender: String, description: String): Boolean
+  SendMail(email: String!): String
+  SendFollow(uid: ID!): Boolean
+  SendUnFollow(uid: ID!): Boolean
+  UserLogin: Boolean
+  UserLogout: Boolean
+}
+
+type Subscription {
+  CheckChat(chat_room: ID!): CheckChat
+  LeaveRoom(chat_room: ID!): LeaveRoom
+  EnterRoom(chat_room: ID!): EnterRoom
+}
+
+type LeaveRoom {
+  leave: Boolean
+  nickname: String
+  uid: String
+}
+
+type EnterRoomUserInfo {
+  nickname: String
+  gender: String
+  description: String
+  imgPath: String
+}
+
+type EnterRoom {
+  uid: String
+  userType: String
+  userInfo: EnterRoomUserInfo
+}
+
+type PrivateRoom {
+  chatRoom: ID
+  lastChat: String
+  createAt: Date
+  user: [User]
+}
+
+type CheckChat implements ChatLog {
+  chat_room: ID!
+  uid: ID
+  nickname: String
+  log: String
+  imgPath: String
+  createAt: Date
+}
+
+type GetChatLog {
+  chat_room: ID!
+  uid: User
+  nickname: String
+  log: String
+  createAt: Date
+}
+
+#DB Types
+
+interface ChatLog {
+  chat_room: ID!
+  uid: ID
+  nickname: String
+  log: String
+  createAt: Date
+}
+
+type ChatRoom {
+  _id: ID!
+  type: String
+  category: String
+  uid: [ID]
+}
+
+type ContryPerVisitor {
+  country_code: String!
+  count: Int
+}
+
+type User {
+  _id: ID!
+  username: String!
+  nickname: String!
+  email: String
+  gender: String
+  status: Boolean
+  imgPath: String
+  password: String
+  description: String
+  followers: [ID]
+  following: [ID]
+  createAt: Date
+}
