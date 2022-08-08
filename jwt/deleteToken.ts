@@ -14,6 +14,9 @@ const deleteToken = (req: Request, res: Response): boolean => {
     res.cookie("refreshToken", "", {
       maxAge: 0,
       httpOnly: true,
+      sameSite: "lax",
+      secure: true,
+      path: process.env.CLIENT_URL,
     });
   }
   return true;
