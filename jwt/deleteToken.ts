@@ -15,7 +15,7 @@ const deleteToken = (req: Request, res: Response): boolean => {
       maxAge: 0,
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      secure: true,
+      secure: process.env.NODE_ENV === "production" ? true : false,
     });
   }
   return true;

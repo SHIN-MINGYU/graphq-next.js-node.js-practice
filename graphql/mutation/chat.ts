@@ -3,10 +3,14 @@ import ChatLogs from "../../schemas/chat_log";
 import { pubsub } from "../pubsub";
 import { ObjectId } from "mongoose";
 import { contextType } from "../../type/contextType";
+import authErrorCheck from "../../util/error/authError";
+import User from "../../schemas/user";
 
 const CHECK_CHAT: string = "CHECK_CHAT";
 const LEAVE_ROOM: string = "LEAVE_ROOM";
 const ENTER_ROOM: string = "ENTER_ROOM";
+const SEND_CALL: string = "SEND_CALL";
+const GET_OFF_CALL: string = "GET_OFF_CALL";
 
 //=============================================================================
 
@@ -82,4 +86,54 @@ const LeaveRoom = async (_: any, args: LeaveRoomArgs) => {
 
 //=============================================================================
 
-export default { SendChat, LeaveRoom, EnterRoom };
+type sendCallArgs = {
+  uid: string;
+};
+
+const SendCall = async (
+  _: any,
+  { uid }: sendCallArgs,
+  context: contextType
+) => {
+  authErrorCheck(context);
+
+  //video chat room create
+  const chatroom = await ChatRooms.create({
+    category: "private",
+    type: "video",
+    uid: [context.req.user.uid, uid],
+  });
+  //send subscribe action to the user
+
+  const user = await User.findOne({ _id: context.req.user.uid });
+
+  pubsub.publish(SEND_CALL, {
+    GetCall: {
+      to: uid,
+      from: user?.nickname,
+      chatRoom: chatroom._id,
+    },
+  });
+  return chatroom._id;
+};
+
+//=============================================================================
+
+type GetOffCall = {
+  chat_room: ObjectId;
+};
+
+const GetOffCall = (_: any, args: GetOffCall, context: contextType) => {
+  console.log(args);
+  pubsub.publish(GET_OFF_CALL, {
+    GetOffCall: {
+      chat_room: args.chat_room,
+      leave: true,
+    },
+  });
+  return true;
+};
+
+//=============================================================================
+
+export default { SendChat, LeaveRoom, EnterRoom, SendCall, GetOffCall };

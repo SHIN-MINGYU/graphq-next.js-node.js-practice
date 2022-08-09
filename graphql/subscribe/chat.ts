@@ -7,7 +7,6 @@ const CheckChat = {
   subscribe: withFilter(
     () => pubsub!.asyncIterator(["CHECK_CHAT"]),
     ({ CheckChat }, variables) => {
-      console.log("payload : ", CheckChat, "variabales : ", variables);
       return CheckChat.chat_room === variables.chat_room;
     }
   ),
@@ -37,4 +36,26 @@ const LeaveRoom = {
 
 //=============================================================================
 
-export default { CheckChat, LeaveRoom, EnterRoom };
+const GetCall = {
+  subscribe: withFilter(
+    () => pubsub!.asyncIterator(["SEND_CALL"]),
+    (payload, variables) => {
+      return payload.GetCall.to === variables.uid;
+    }
+  ),
+};
+
+//=============================================================================
+
+const GetOffCall = {
+  subscribe: withFilter(
+    () => pubsub!.asyncIterator(["GET_OFF_CALL"]),
+    (payload, variables) => {
+      return payload.GetOffCall.chat_room === variables.chat_room;
+    }
+  ),
+};
+
+//=============================================================================
+
+export default { CheckChat, LeaveRoom, EnterRoom, GetCall, GetOffCall };

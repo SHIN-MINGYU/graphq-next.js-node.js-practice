@@ -30,7 +30,7 @@ const Login = async (_: any, args: LoginArgs, context: any) => {
       maxAge: 3.154e10,
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      secure: true,
+      secure: process.env.NODE_ENV === "production" ? true : false,
     });
     //return accessToken for remain in localStorage
     return accessToken;

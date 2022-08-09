@@ -15,6 +15,8 @@ type Query {
 }
 
 type Mutation {
+  SendCall(uid: ID): String
+  GetOffCall(chat_room: ID): Boolean
   SendChat(
     chat_room: ID!
     uid: ID
@@ -55,6 +57,19 @@ type Subscription {
   CheckChat(chat_room: ID!): CheckChat
   LeaveRoom(chat_room: ID!): LeaveRoom
   EnterRoom(chat_room: ID!): EnterRoom
+  GetCall(uid: ID!): GetCall
+  GetOffCall(chat_room: ID): GetOffCall
+}
+
+type GetOffCall {
+  chatRoom: ID!
+  leave: Boolean!
+}
+
+type GetCall {
+  to: String!
+  from: ID!
+  chatRoom: ID!
 }
 
 type LeaveRoom {
