@@ -20,7 +20,6 @@ import imgRouter from "./routes/img";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { userInfo } from "./type/session";
-import { ExpressPeerServer } from "peer";
 
 const typeDefs: string = readFileSync(
   require.resolve(path.join(__dirname, "./graphql/typeDefs.graphql"))
@@ -85,7 +84,6 @@ async function startApolloServer(typeDefs: string, resolvers: any) {
 
   app.use(cookieParser());
   app.use(cors(corsOptions));
-  app.use("/peer", ExpressPeerServer(httpServer));
   app.use("/img", express.static("uploads"));
   app.use("/img", imgRouter);
   app.use(
