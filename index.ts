@@ -23,7 +23,7 @@ import { userInfo } from "./type/session";
 import { PeerServer } from "peer";
 
 // open peer server for video chat
-PeerServer({ port: 9000, path: "/peer" });
+PeerServer({ port: 443, path: "/peer" });
 
 const typeDefs: string = readFileSync(
   require.resolve(path.join(__dirname, "./graphql/typeDefs.graphql"))
