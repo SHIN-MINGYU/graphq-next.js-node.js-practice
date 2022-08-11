@@ -106,14 +106,17 @@ const SendCall = async (
   //send subscribe action to the user
 
   const user = await User.findOne({ _id: context.req.user.uid });
-
-  pubsub.publish(SEND_CALL, {
-    GetCall: {
-      to: uid,
-      from: user?.nickname,
-      chatRoom: chatroom._id,
-    },
-  });
+  setTimeout(
+    () =>
+      pubsub.publish(SEND_CALL, {
+        GetCall: {
+          to: uid,
+          from: user?.nickname,
+          chatRoom: chatroom._id,
+        },
+      }),
+    2000
+  );
   return chatroom._id;
 };
 

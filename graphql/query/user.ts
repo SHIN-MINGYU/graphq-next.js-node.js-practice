@@ -4,6 +4,8 @@ import createSession from "../../session/createSession";
 import { contextType } from "../../type/contextType";
 import authErrorCheck from "../../util/error/authError";
 import createHashedPassword from "../../util/user/createHashedPassword";
+import { ObjectId } from "mongoose";
+import ChatRoom from "../../schemas/chat_room";
 
 //=============================================================================
 
@@ -88,10 +90,29 @@ const GetFollowerNotF4F = async (_: any, {}, context: contextType) => {
 
 //=============================================================================
 
+type getUserInChat = {
+  chatRoom: ObjectId;
+};
+
+const GetUserInChat = async (
+  _: any,
+  { chatRoom }: getUserInChat,
+  context: contextType
+) => {
+  authErrorCheck(context);
+  const uidArr = (await ChatRoom.findOne({ chatRoom: chatRoom }))?.uid;
+  const newUidArr = uidArr?.filter((uid) => uid != context.req.user.uid);
+  const users = await User.find({ _id: { $in: newUidArr } });
+  return users;
+};
+
+//=============================================================================
+
 export default {
   Login,
   UserInfo,
   SearchUser,
   GetF4F,
   GetFollowerNotF4F,
+  GetUserInChat,
 };

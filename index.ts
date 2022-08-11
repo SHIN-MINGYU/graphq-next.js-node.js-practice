@@ -20,6 +20,10 @@ import imgRouter from "./routes/img";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { userInfo } from "./type/session";
+import { PeerServer } from "peer";
+
+// open peer server for video chat
+PeerServer({ port: 9000, path: "/peer" });
 
 const typeDefs: string = readFileSync(
   require.resolve(path.join(__dirname, "./graphql/typeDefs.graphql"))

@@ -12,6 +12,7 @@ type Query {
   GetF4F: [User]
   GetPrivateRoomList: [PrivateRoom]
   GetFollowerNotF4F: [User]
+  GetUserInChat(chat_room: ID!): [User]
 }
 
 type Mutation {
