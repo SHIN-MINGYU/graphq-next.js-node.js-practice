@@ -101,7 +101,9 @@ const GetUserInChat = async (
 ) => {
   authErrorCheck(context);
   const uidArr = (await ChatRoom.findOne({ chatRoom: chatRoom }))?.uid;
+  console.log("uidArr : ", uidArr);
   const newUidArr = uidArr?.filter((uid) => uid != context.req.user.uid);
+  console.log("newUidArr : ", newUidArr);
   const users = await User.find({ _id: { $in: newUidArr } });
   return users;
 };
