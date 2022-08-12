@@ -91,17 +91,17 @@ const GetFollowerNotF4F = async (_: any, {}, context: contextType) => {
 //=============================================================================
 
 type getUserInChat = {
-  chatRoom: ObjectId;
+  chat_room: string;
 };
 
 const GetUserInChat = async (
   _: any,
-  { chatRoom }: getUserInChat,
+  { chat_room }: getUserInChat,
   context: contextType
 ) => {
   authErrorCheck(context);
-  console.log(chatRoom);
-  const uidArr = (await ChatRoom.findOne({ chatRoom: chatRoom }))?.uid;
+  console.log(chat_room);
+  const uidArr = (await ChatRoom.findOne({ _id: chat_room }))?.uid;
   console.log("uidArr : ", uidArr);
   const newUidArr = uidArr?.filter((uid) => uid != context.req.user.uid);
   console.log("newUidArr : ", newUidArr);
